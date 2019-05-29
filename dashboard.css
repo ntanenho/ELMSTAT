@@ -1,0 +1,25 @@
+#course_table {
+  font-family: "Lato","Helvetica Neue",Helvetica,Arial,sans-serif;
+  border-collapse: collapse;
+  margin-left: 30px;
+  margin-bottom: 100px;
+}
+#course_table td, #course_table th {
+  border: 1px solid #ddd;
+  padding: .5px;
+  width: 1000px;
+  text-align: center;
+}
+#course_table tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+#course_table tr:hover {
+  background-color: #ddd;
+}
+#course_table th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: center;
+  background-color: #4CAF50;
+  color: white;
+}

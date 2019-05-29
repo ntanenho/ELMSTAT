@@ -5,11 +5,10 @@
   "permissions": ["activeTab", "declarativeContent", "storage"],
   "content_scripts": [
   {
-    "matches": [
-      "https://umd.instructure.com/courses/*/grades*"
-    ],
-    "js": ["content.js"],
-    "css": ["content.css"]
+    "matches": ["https://umd.instructure.com/", "https://umd.instructure.com/courses/*/grades*"],
+    "js": ["dashboard.js", "course.js"],
+    "css": ["dashboard.css", "course.css"],
+    "all_frames": true
   }
 ],
   "options_page": "options.html",

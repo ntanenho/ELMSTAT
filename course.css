@@ -1,0 +1,60 @@
+#main_div {
+  height: 100px;
+  margin-top: 20px;
+  border-width: 2px;
+  border-top-left-radius: 3px;
+  border-bottom-left-radius: 3px;
+  border-top-right-radius: 3px;
+  border-bottom-right-radius: 3px;
+  background: #fff;
+  overflow: hidden;
+  border-style: solid;
+  border-color: #A5AFB5;
+}
+#class_avg {
+  margin-left: 20px;
+  margin-top: 10px;
+}
+#graphic_left {
+  left: 0px;
+  height: 20px;
+  border-width: 2px;
+  border-top-left-radius: 3px;
+  border-bottom-left-radius: 3px;
+  border-right-width: 0;
+  background: #fff;
+  overflow: hidden;
+  border-style: solid;
+  border-color: #A5AFB5;
+  position: absolute;
+}
+#graphic_right {
+  position: absolute;
+  height: 20px;
+  border-width: 2px;
+  border-top-right-radius: 3px;
+  border-bottom-right-radius: 3px;
+  background: #fff;
+  overflow: hidden;
+  border-style: solid;
+  border-color: #A5AFB5;
+}
+#graphic {
+  cursor: pointer;
+  height: 30px;
+  margin-left: 30px;
+  margin-top: 20px;
+  width: 160px;
+  position: relative;
+  margin-right: 30px;
+}
+#grade_block {
+  position: absolute;
+  overflow: hidden;
+  top: 5px;
+  height: 10px;
+  width: 10px;
+  border: 2px solid #248;
+  background: #abd;
+  border-radius: 3px;
+}
