@@ -2,7 +2,7 @@
   font-family: "Lato","Helvetica Neue",Helvetica,Arial,sans-serif;
   border-collapse: collapse;
   margin-left: 30px;
-  margin-bottom: 100px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.3)
 }
 #course_table td, #course_table th {
   border: 1px solid #ddd;
@@ -13,13 +13,37 @@
 #course_table tr:nth-child(even) {
   background-color: #f2f2f2;
 }
-#course_table tr:hover {
-  background-color: #ddd;
-}
 #course_table th {
   padding-top: 12px;
   padding-bottom: 12px;
   text-align: center;
   background-color: #4CAF50;
   color: white;
+}
+#update_status {
+  margin-left: 53px;
+  margin-bottom: 100px;
+  margin-top: 5px;
+}
+#loader {
+  border: 3px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 3px solid #3498db;
+  width: 10px;
+  height: 10px;
+  animation: spin 2s linear infinite;
+  position: absolute;
+  left: 33px;
+  margin-top: 5px;
+}
+#check {
+  width: 15px;
+  height: 15px;
+  margin-right: 5px;
+  color: #00AC18
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }

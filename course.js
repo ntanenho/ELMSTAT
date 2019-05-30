@@ -1,4 +1,4 @@
-if (document.getElementsByClassName("summary").length > 0) {
+if (window.location.href.match(/https:\/\/umd\.instructure\.com\/courses\/.*\/grades/g)) {
   var weighted_table = document.getElementsByClassName("summary")[0];
   var weighted_rows = weighted_table.rows;
   var weighted_rows_len = weighted_rows.length;
@@ -34,7 +34,6 @@ if (document.getElementsByClassName("summary").length > 0) {
   }
 
   for (var k of groups_graded.keys()) {
-    //console.log(((groups_graded.get(k) / groups_size.get(k)) * group_weights.get(k)));
     groups_graded.set(k, ((groups_graded.get(k) / groups_size.get(k)) * group_weights.get(k)))
   }
   for (var k of groups_graded.keys()) {
