@@ -1,19 +1,28 @@
 #course_table {
   font-family: "Lato","Helvetica Neue",Helvetica,Arial,sans-serif;
   border-collapse: collapse;
-  margin-left: 30px;
+  margin-left: 24px;
   box-shadow: 0 2px 5px rgba(0,0,0,0.3)
 }
-#course_table td, #course_table th {
+ #gpa_table {
+   font-family: "Lato","Helvetica Neue",Helvetica,Arial,sans-serif;
+   border-collapse: collapse;
+   margin-left: 687px;
+   margin-bottom: 100px;
+   width: 30%;
+   box-shadow: 0 2px 5px rgba(0,0,0,0.3)
+ }
+#course_table td, #course_table th, #gpa_table td, #gpa_table th {
   border: 1px solid #ddd;
   padding: .5px;
   width: 1000px;
   text-align: center;
+  white-space: nowrap;
 }
 #course_table tr:nth-child(even) {
   background-color: #f2f2f2;
 }
-#course_table th {
+#course_table th, #gpa_table th {
   padding-top: 12px;
   padding-bottom: 12px;
   text-align: center;
@@ -21,8 +30,7 @@
   color: white;
 }
 #update_status {
-  margin-left: 53px;
-  margin-bottom: 100px;
+  margin-left: 50px;
   margin-top: 5px;
 }
 #loader {
@@ -33,14 +41,29 @@
   height: 10px;
   animation: spin 2s linear infinite;
   position: absolute;
-  left: 33px;
+  left: 30px;
   margin-top: 5px;
 }
 #check {
   width: 15px;
   height: 15px;
   margin-right: 5px;
+  margin-bottom: 5px;
   color: #00AC18
+}
+.Grade {
+   text-align: center;
+   width: 50%;
+   box-sizing: border-box;
+   -webkit-box-sizing:border-box;
+   -moz-box-sizing: border-box;
+}
+.Credits {
+  text-align: center;
+  width: 60%;
+  box-sizing: border-box;
+  -webkit-box-sizing:border-box;
+  -moz-box-sizing: border-box;
 }
 
 @keyframes spin {
