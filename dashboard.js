@@ -69,6 +69,7 @@ if (window.location.href == "https://umd.instructure.com/") {
   "<option value=3.3>B+</option><option value=3.0>B</option><option value=2.7>B-</option><option value=2.3>C+</option><option value=2.0>C</option><option value=1.7>C-</option><option value=1.3>D+</option>" +
   "<option value=1.0>D</option><option value=0.7>D-</option><option value=0.0 selected>F</option></select>";
 
+  window.addEventListener("beforeunload", storeTable);
   createTable();
   for (var i = 0; i < num_courses; i++) {
     iframe = document.createElement("iframe");
@@ -148,12 +149,12 @@ if (window.location.href == "https://umd.instructure.com/") {
       //Still buggy, needs some more work
       if (gpa_table.rows[2].cells[2].innerHTML == "-") {
         gpa_table.rows[2].cells[2].innerHTML = "<input type=number id=current_gpa name=gpa min=0 max=4 step=0.001 value=>";
-        document.getElementById("current_gpa").onkeyup = function(event) {if (event.charCode != 46) {
-        cumulativeGPA(event);}};
+        document.getElementById("current_gpa").onkeyup = function(event) {if (event.key != ".") {
+        cumulativeGPA(this.value);}};
         document.getElementById("current_gpa").onkeypress = function(event) {if (this.value.length == 5) {return false;} if (event.charCode == 45) {event.preventDefault();}};
       } else {
-        document.getElementById("current_gpa").onkeyup = function(event) {if (event.charCode != 46) {
-        cumulativeGPA(event);} if (event.charCode == 45) {event.preventDefault();}};
+        document.getElementById("current_gpa").onkeyup = function(event) {if (event.key != ".") {
+        cumulativeGPA(this.value);}};
         document.getElementById("current_gpa").onkeypress = function(event) {if (this.value.length == 5) {return false;} if (event.charCode == 45) {event.preventDefault();}};
       }
 
@@ -180,7 +181,7 @@ if (window.location.href == "https://umd.instructure.com/") {
     for (var i = 0; i < num_courses; i++) {
       document.getElementById("i_frame" + i).remove();
     }
-    storeTable();
+    //storeTable();
   }
 
   function createTable() {
@@ -293,7 +294,6 @@ if (window.location.href == "https://umd.instructure.com/") {
       cumulativeGPA = cumulativeRow.insertCell(-1);
       cumulativeCredits.innerHTML = "-";
       cumulativeGPA.innerHTML = "-";
-
     }
   }
 
@@ -460,11 +460,10 @@ if (window.location.href == "https://umd.instructure.com/") {
     cumulativeGPA(null);
   }
 
-  function cumulativeGPA(e) {
+  function cumulativeGPA(val) {
     var gpa_table = document.getElementById("gpa_table");
-    console.log(this.value);
-     if (this.value != undefined) {
-       document.getElementById("current_gpa").setAttribute('value', this.value);
+     if (val != null) {
+       document.getElementById("current_gpa").setAttribute('value', val);
     }
     if (document.getElementById("current_credits") != "" && document.getElementById("current_gpa") != "" && gpa_table.rows[3].cells[1].innerHTML != "-" &&
         gpa_table.rows[1].cells[1].innerHTML != "-" && gpa_table.rows[1].cells[2].innerHTML != "-") {
@@ -479,6 +478,6 @@ if (window.location.href == "https://umd.instructure.com/") {
     } else {
       gpa_table.rows[3].cells[2].innerHTML = "-";
     }
-    storeTable();
+    //storeTable();
   }
 }
