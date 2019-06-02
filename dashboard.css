@@ -7,9 +7,9 @@
  #gpa_table {
    font-family: "Lato","Helvetica Neue",Helvetica,Arial,sans-serif;
    border-collapse: collapse;
-   margin-left: 687px;
+   margin-left: 588px;
    margin-bottom: 100px;
-   width: 30%;
+   width: 40%;
    box-shadow: 0 2px 5px rgba(0,0,0,0.3)
  }
 #course_table td, #course_table th, #gpa_table td, #gpa_table th {
@@ -65,7 +65,24 @@
   -webkit-box-sizing:border-box;
   -moz-box-sizing: border-box;
 }
-
+#current_credits {
+  text-align: center;
+  width: 60%;
+  box-sizing: border-box;
+  -webkit-box-sizing:border-box;
+  -moz-box-sizing: border-box;
+}
+#current_gpa {
+  text-align: center;
+  width: 90%;
+  box-sizing: border-box;
+  -webkit-box-sizing:border-box;
+  -moz-box-sizing: border-box;
+}
+input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
