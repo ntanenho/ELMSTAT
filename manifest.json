@@ -4,19 +4,25 @@
   "description": "",
   "permissions": ["activeTab", "declarativeContent", "storage"],
   "content_scripts": [
-  {
-    "matches": ["https://umd.instructure.com/", "https://umd.instructure.com/courses/*/grades*"],
-    "js": ["dashboard.js", "course.js"],
-    "css": ["dashboard.css", "course.css"],
-    "all_frames": true
-  }
-],
+    {
+      "matches": ["https://umd.instructure.com/", "https://myelms.umd.edu/", "https://umd.instructure.com/courses/*/grades*", "https://myelms.umd.edu/courses/*/grades*"],
+      "js": ["dashboard.js", "course.js"],
+      "css": ["dashboard.css", "course.css"],
+      "all_frames": true
+    }
+  ],
   "options_page": "options.html",
   "background": {
     "scripts": ["background.js"],
     "persistent": false
   },
-  "page_action": {
+  "icons": {
+    "16": "images/ic_launcher16.png",
+    "32": "images/ic_launcher32.png",
+    "48": "images/ic_launcher48.png",
+    "128": "images/ic_launcher128.png"
+  },
+  "browser_action": {
     "default_popup": "popup.html",
     "default_icon": {
       "16": "images/ic_launcher16.png",
@@ -25,12 +31,7 @@
       "128": "images/ic_launcher128.png"
     }
   },
-  "icons": {
-    "16": "images/ic_launcher16.png",
-    "32": "images/ic_launcher32.png",
-    "48": "images/ic_launcher48.png",
-    "128": "images/ic_launcher128.png"
-  },
+  "content_security_policy": "script-src 'self' https://cdn.firebase.com https://*.firebaseio.com; object-src 'self'",
   "web_accessible_resources": ["images/*.png"],
   "manifest_version": 2
 }

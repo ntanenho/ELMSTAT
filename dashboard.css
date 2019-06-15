@@ -65,16 +65,23 @@
   -webkit-box-sizing:border-box;
   -moz-box-sizing: border-box;
 }
-#current_credits {
+#current_gpa_whole {
   text-align: center;
-  width: 60%;
+  width: 32%;
   box-sizing: border-box;
   -webkit-box-sizing:border-box;
   -moz-box-sizing: border-box;
 }
-#current_gpa {
+#current_gpa_deci {
   text-align: center;
-  width: 90%;
+  width: 52%;
+  box-sizing: border-box;
+  -webkit-box-sizing:border-box;
+  -moz-box-sizing: border-box;
+}
+#current_credits {
+  text-align: center;
+  width: 60%;
   box-sizing: border-box;
   -webkit-box-sizing:border-box;
   -moz-box-sizing: border-box;

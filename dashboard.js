@@ -1,4 +1,4 @@
-if (window.location.href == "https://umd.instructure.com/") {
+if (window.location.href == "https://umd.instructure.com/" || window.location.href == "https://myelms.umd.edu/") {
   var course_names = document.getElementsByClassName("ic-DashboardCard__header-subtitle ellipsis");
   var course_links = document.getElementsByClassName("ic-DashboardCard__link");
   var num_courses = course_names.length;
@@ -8,6 +8,20 @@ if (window.location.href == "https://umd.instructure.com/") {
   var letter_grade = new Map([]);
   var frame_loads = 0;
   var iframe;
+  var select_whole = "<select class=whole name=Credits><option value= selected></option><option value=0>0</option><option value=1>1</option><option value=2>2</option>" +
+  "<option value=3>3</option><option value=4>4</option></select>";
+  var select_whole_0 = "<select class=whole name=Credits><option value=></option><option value=0 selected>0</option><option value=1>1</option><option value=2>2</option>" +
+  "<option value=3>3</option><option value=4>4</option></select>";
+  var select_whole_1 = "<select class=whole name=Credits><option value=></option><option value=0>0</option><option value=1 selected>1</option><option value=2>2</option>" +
+  "<option value=3>3</option><option value=4>4</option></select>";
+  var select_whole_2 = "<select class=whole name=Credits><option value=></option><option value=0>0</option><option value=1>1</option><option value=2  selected>2</option>" +
+  "<option value=3>3</option><option value=4>4</option></select>";
+  var select_whole_3 = "<select class=whole name=Credits><option value=></option><option value=0>0</option><option value=1>1</option><option value=2>2</option>" +
+  "<option value=3 selected>3</option><option value=4>4</option></select>";
+  var select_whole_4 = "<select class=whole name=Credits><option value=></option><option value=0>0</option><option value=1>1</option><option value=2>2</option>" +
+  "<option value=3>3</option><option value=4 selected>4</option></select>";
+
+
   var select_credits = "<select class=Credits name=Credits><option value= selected></option><option value=0>0</option><option value=1>1</option><option value=2>2</option>" +
   "<option value=3>3</option><option value=4>4</option><option value=5>5</option><option value=6>6</option></select>";
   var select_0 = "<select class=Credits name=Credits><option value=></option><option value=0 selected>0</option><option value=1>1</option><option value=2>2</option>" +
@@ -82,18 +96,25 @@ if (window.location.href == "https://umd.instructure.com/") {
   }
 
   for (var i = 0; i < num_courses; i++) {
-    document.getElementById('i_frame' + i).onload = function() {
-      var main = this.contentDocument.getElementById('class_avg').innerHTML;
-      var percentages = main.match(/(\d|\.)+\%/g);
-      var course = this.contentDocument.getElementsByClassName("ellipsible")[1].innerHTML;
-      var graphic = this.contentDocument.getElementById('graphic');
-      var letter = this.contentDocument.getElementsByClassName("letter_grade")[0];
-      class_avgs.set(course, percentages[0]);
-      grades.set(course, percentages[3]);
-      graphics.set(course, graphic);
-      if (letter != undefined) {
-        letter_grade.set(course, letter.innerHTML);
+      document.getElementById('i_frame' + i).onload = function() {
+      if (this.contentDocument.getElementById('class_avg') != undefined) {
+        var main = this.contentDocument.getElementById('class_avg').innerHTML;
+        var percentages = main.match(/(\d|\.)+\%/g);
+        var course = this.contentDocument.getElementsByClassName("ellipsible")[1].innerHTML;
+        var graphic = this.contentDocument.getElementById('graphic');
+        var letter = this.contentDocument.getElementsByClassName("letter_grade")[0];
+        class_avgs.set(course, percentages[0]);
+        grades.set(course, percentages[3]);
+        graphics.set(course, graphic);
+        if (letter != undefined) {
+          letter_grade.set(course, letter.innerHTML);
+        } else {
+          letter_grade.set(course, "");
+        }
       } else {
+        class_avgs.set(course, "N/A");
+        grades.set(course, "N/A");
+        graphics.set(course, "N/A");
         letter_grade.set(course, "");
       }
       frame_loads++;
@@ -148,14 +169,20 @@ if (window.location.href == "https://umd.instructure.com/") {
 
       //Still buggy, needs some more work
       if (gpa_table.rows[2].cells[2].innerHTML == "-") {
-        gpa_table.rows[2].cells[2].innerHTML = "<input type=number id=current_gpa name=gpa min=0 max=4 step=0.001 value=>";
-        document.getElementById("current_gpa").onkeyup = function(event) {if (event.key != ".") {
-        cumulativeGPA(this.value);}};
-        document.getElementById("current_gpa").onkeypress = function(event) {if (this.value.length == 5) {return false;} if (event.charCode == 45) {event.preventDefault();}};
+        gpa_table.rows[2].cells[2].innerHTML = "<div>" + "<input type=number id=current_gpa_whole name=gpa_whole value=><span> . <input type=number id=current_gpa_deci name=gpa_deci value=></span></div>";
+        document.getElementById("current_gpa_whole").onkeypress = function(event) {if (this.value.length == 1) {return false;} if ((event.charCode >= 53 && event.charCode <= 57)
+         || event.charCode == 45 || event.charCode == 46) {event.preventDefault();} if (event.charCode == 52) {document.getElementById("current_gpa_deci").value = "000"; document.getElementById("current_gpa_deci").disabled = true;}};
+        document.getElementById("current_gpa_whole").onkeydown = function(event) {if (this.value == "4" && (event.key == "Backspace" || event.key == "Delete"))
+          {document.getElementById("current_gpa_deci").value = ""; document.getElementById("current_gpa_deci").disabled = false;}}
+        document.getElementById("current_gpa_deci").onkeypress = function(event) {if (this.value.length == 3) {return false;} if (event.charCode == 45 || event.charCode == 46) {event.preventDefault();}}
+        //cumulativeGPA(this.value);
       } else {
-        document.getElementById("current_gpa").onkeyup = function(event) {if (event.key != ".") {
-        cumulativeGPA(this.value);}};
-        document.getElementById("current_gpa").onkeypress = function(event) {if (this.value.length == 5) {return false;} if (event.charCode == 45) {event.preventDefault();}};
+        document.getElementById("current_gpa_whole").onkeypress = function(event) {if (this.value.length == 1) {return false;} if ((event.charCode >= 53 && event.charCode <= 57)
+         || event.charCode == 45 || event.charCode == 46) {event.preventDefault();} if (event.charCode == 52) {document.getElementById("current_gpa_deci").value = "000"; document.getElementById("current_gpa_deci").disabled = true;}};
+        document.getElementById("current_gpa_whole").onkeydown = function(event) {if (this.value == "4" && (event.key == "Backspace" || event.key == "Delete"))
+          {document.getElementById("current_gpa_deci").value = ""; document.getElementById("current_gpa_deci").disabled = false;}}
+        document.getElementById("current_gpa_deci").onkeypress = function(event) {if (this.value.length == 3) {return false;} if (event.charCode == 45 || event.charCode == 46) {event.preventDefault();}}
+        //cumulativeGPA(this.value);
       }
 
       if (document.getElementsByClassName("Grade").length > 0) {
