@@ -167,22 +167,23 @@ if (window.location.href == "https://umd.instructure.com/" || window.location.hr
         document.getElementById("current_credits").onkeypress = function(event) {if (this.value.length==3) {return false;} if (event.charCode == 46 || event.charCode == 45) event.preventDefault();};
       }
 
-      //Still buggy, needs some more work
       if (gpa_table.rows[2].cells[2].innerHTML == "-") {
         gpa_table.rows[2].cells[2].innerHTML = "<div>" + "<input type=number id=current_gpa_whole name=gpa_whole value=><span> . <input type=number id=current_gpa_deci name=gpa_deci value=></span></div>";
         document.getElementById("current_gpa_whole").onkeypress = function(event) {if (this.value.length == 1) {return false;} if ((event.charCode >= 53 && event.charCode <= 57)
          || event.charCode == 45 || event.charCode == 46) {event.preventDefault();} if (event.charCode == 52) {document.getElementById("current_gpa_deci").value = "000"; document.getElementById("current_gpa_deci").disabled = true;}};
         document.getElementById("current_gpa_whole").onkeydown = function(event) {if (this.value == "4" && (event.key == "Backspace" || event.key == "Delete"))
           {document.getElementById("current_gpa_deci").value = ""; document.getElementById("current_gpa_deci").disabled = false;}}
+        document.getElementById("current_gpa_whole").addEventListener("input", cumulativeGPA_Whole);
         document.getElementById("current_gpa_deci").onkeypress = function(event) {if (this.value.length == 3) {return false;} if (event.charCode == 45 || event.charCode == 46) {event.preventDefault();}}
-        //cumulativeGPA(this.value);
+        document.getElementById("current_gpa_deci").addEventListener("input", cumulativeGPA_Deci);
       } else {
         document.getElementById("current_gpa_whole").onkeypress = function(event) {if (this.value.length == 1) {return false;} if ((event.charCode >= 53 && event.charCode <= 57)
          || event.charCode == 45 || event.charCode == 46) {event.preventDefault();} if (event.charCode == 52) {document.getElementById("current_gpa_deci").value = "000"; document.getElementById("current_gpa_deci").disabled = true;}};
         document.getElementById("current_gpa_whole").onkeydown = function(event) {if (this.value == "4" && (event.key == "Backspace" || event.key == "Delete"))
           {document.getElementById("current_gpa_deci").value = ""; document.getElementById("current_gpa_deci").disabled = false;}}
+        document.getElementById("current_gpa_whole").addEventListener("input", cumulativeGPA_Whole);
         document.getElementById("current_gpa_deci").onkeypress = function(event) {if (this.value.length == 3) {return false;} if (event.charCode == 45 || event.charCode == 46) {event.preventDefault();}}
-        //cumulativeGPA(this.value);
+        document.getElementById("current_gpa_deci").addEventListener("input", cumulativeGPA_Deci);
       }
 
       if (document.getElementsByClassName("Grade").length > 0) {
@@ -208,7 +209,6 @@ if (window.location.href == "https://umd.instructure.com/" || window.location.hr
     for (var i = 0; i < num_courses; i++) {
       document.getElementById("i_frame" + i).remove();
     }
-    //storeTable();
   }
 
   function createTable() {
@@ -487,24 +487,48 @@ if (window.location.href == "https://umd.instructure.com/" || window.location.hr
     cumulativeGPA(null);
   }
 
-  function cumulativeGPA(val) {
+  function cumulativeGPA_Whole() {
+    if (this.value != undefined) {
+      document.getElementById("current_gpa_whole").setAttribute('value', this.value);
+    }
+    cumulativeGPA(null);
+  }
+
+  function cumulativeGPA_Deci() {
+    if (this.value != undefined) {
+      document.getElementById("current_gpa_deci").setAttribute('value', this.value);
+    }
+    cumulativeGPA(null);
+  }
+
+  function cumulativeGPA() {
     var gpa_table = document.getElementById("gpa_table");
-     if (val != null) {
-       document.getElementById("current_gpa").setAttribute('value', val);
-    }
-    if (document.getElementById("current_credits") != "" && document.getElementById("current_gpa") != "" && gpa_table.rows[3].cells[1].innerHTML != "-" &&
-        gpa_table.rows[1].cells[1].innerHTML != "-" && gpa_table.rows[1].cells[2].innerHTML != "-") {
-      var semesterTotal = (parseInt(gpa_table.rows[1].cells[1].innerHTML) * parseFloat(gpa_table.rows[1].cells[2].innerHTML));
-      var currentTotal = (parseInt(document.getElementById("current_credits").value) * parseFloat(document.getElementById("current_gpa").value));
-      var total = semesterTotal + currentTotal;
-      if (!isNaN((total / parseInt(gpa_table.rows[3].cells[1].innerHTML)).toFixed(3))) {
-        gpa_table.rows[3].cells[2].innerHTML = "" + (total / parseInt(gpa_table.rows[3].cells[1].innerHTML)).toFixed(3);
-      } else {
-          gpa_table.rows[3].cells[2].innerHTML = "-";
-      }
+    var val;
+
+    if (document.getElementById("current_credits") != "" && gpa_table.rows[3].cells[1].innerHTML != "-" && gpa_table.rows[1].cells[1].innerHTML != "-" && gpa_table.rows[1].cells[2].innerHTML != "-") {
+      if ((document.getElementById("current_gpa_whole").value == "" && document.getElementById("current_gpa_deci").value != "")
+      || (document.getElementById("current_gpa_whole").value != "" && document.getElementById("current_gpa_deci").value == "")
+      || (document.getElementById("current_gpa_whole").value != "" && document.getElementById("current_gpa_deci").value != "")) {
+       if (document.getElementById("current_gpa_whole").value == "") {
+         val = "0." + document.getElementById("current_gpa_deci").value;
+       } else if (document.getElementById("current_gpa_deci").value == "") {
+         val = document.getElementById("current_gpa_whole").value + ".000";
+       } else {
+         val = document.getElementById("current_gpa_whole").value + "." + document.getElementById("current_gpa_deci").value;
+       }
+       var semesterTotal = (parseInt(gpa_table.rows[1].cells[1].innerHTML) * parseFloat(gpa_table.rows[1].cells[2].innerHTML));
+       var currentTotal = (parseInt(document.getElementById("current_credits").value) * parseFloat(val));
+       var total = semesterTotal + currentTotal;
+       if (!isNaN((total / parseInt(gpa_table.rows[3].cells[1].innerHTML)).toFixed(3))) {
+         gpa_table.rows[3].cells[2].innerHTML = "" + (total / parseInt(gpa_table.rows[3].cells[1].innerHTML)).toFixed(3);
+       } else {
+            gpa_table.rows[3].cells[2].innerHTML = "-";
+       }
+     } else {
+       gpa_table.rows[3].cells[2].innerHTML = "-";
+     }
     } else {
-      gpa_table.rows[3].cells[2].innerHTML = "-";
+       gpa_table.rows[3].cells[2].innerHTML = "-";
     }
-    //storeTable();
   }
 }

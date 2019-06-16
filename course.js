@@ -3,7 +3,8 @@ if (window.location.href.match(/https:\/\/umd\.instructure\.com\/courses\/.*\/gr
   var parentDiv = document.getElementsByClassName("student_assignment hard_coded final_grade")[0];
   var user_grade = parentDiv.getElementsByClassName("grade")[0].innerHTML;
   var total_points = document.getElementsByClassName("possible points_possible");
-  if (user_grade != "N/A") {
+  var check_avgs_exist = document.getElementsByClassName("ic-Table ic-Table--condensed score_details_table")[0];
+  if (user_grade != "N/A" && check_avgs_exist != undefined) {
     if (total_points[total_points.length - 1].innerHTML != "") {
       user_grade = (parseFloat(user_grade)/parseFloat(total_points[total_points.length - 1])).toString();
     }
