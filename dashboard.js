@@ -94,7 +94,6 @@ if (window.location.href == "https://umd.instructure.com/" || window.location.hr
     iframe.style.border = "none";
     document.body.appendChild(iframe);
   }
-
   for (var i = 0; i < num_courses; i++) {
       document.getElementById('i_frame' + i).onload = function() {
       if (this.contentDocument.getElementById('class_avg') != undefined) {
@@ -128,7 +127,25 @@ if (window.location.href == "https://umd.instructure.com/" || window.location.hr
       var gpa_table = document.getElementById("gpa_table");
       var k = 0, j = 0;
 
-      for (var i = 1; i < table.rows.length; i++) {
+      if (gpa_table.rows[2].cells[1].innerHTML != "-") {
+        document.getElementById("current_credits").disabled = false;
+      }
+      if (gpa_table.rows[2].cells[2].innerHTML != "-") {
+        document.getElementById("current_gpa_whole").disabled = false;
+        document.getElementById("current_gpa_deci").disabled = false;
+      }
+      if (document.getElementsByClassName("Grade").length > 0) {
+        for (var i = 0; i < document.getElementsByClassName("Grade").length; i++) {
+          document.getElementsByClassName("Grade")[i].disabled = false;
+        }
+      }
+      if (document.getElementsByClassName("Credits").length > 0) {
+        for (var i = 0; i < document.getElementsByClassName("Credits").length; i++) {
+          document.getElementsByClassName("Credits")[i].disabled = false;
+        }
+      }
+
+      for (var i = 1; i < course_names.length; i++) {
           var name = course_names[i - 1].innerHTML;
           table.rows[i].cells[1].innerHTML = "<a href = " + course_links[i - 1].href + "/grades>" + grades.get(name) + "</a>";
           table.rows[i].cells[2].innerHTML = "<a href = " + course_links[i - 1].href + "/grades>" + class_avgs.get(name) + "</a>";
@@ -186,11 +203,6 @@ if (window.location.href == "https://umd.instructure.com/" || window.location.hr
         document.getElementById("current_gpa_deci").addEventListener("input", cumulativeGPA_Deci);
       }
 
-      if (document.getElementsByClassName("Grade").length > 0) {
-        for (var i = 0; i < document.getElementsByClassName("Grade").length; i++) {
-          document.getElementsByClassName("Grade")[i].disabled = false;
-        }
-      }
       var update = document.getElementById("update_status");
       document.getElementById("loader").remove();
       update.innerHTML = "Table Up to Date";
@@ -214,7 +226,8 @@ if (window.location.href == "https://umd.instructure.com/" || window.location.hr
   function createTable() {
     var courseTable = document.createElement("table");
     var gpaTable = document.createElement("table");
-    var update = document.createElement("div"), loader = document.createElement("div");
+    var update = document.createElement("div");
+    var loader = document.createElement("div");
     var parentDiv = document.getElementById("content-wrapper");
     var currentDiv = document.getElementById("content");
     var i = 0;
@@ -238,95 +251,126 @@ if (window.location.href == "https://umd.instructure.com/" || window.location.hr
     chrome.storage.sync.get(['key'], function(result) {
       if (Object.values(result)[0] != undefined) {
         table.innerHTML = Object.values(result)[0].val;
+      } else {
+        var header = table.createTHead();
+        var headRow = header.insertRow(0);
+        var headCourse = headRow.insertCell(-1);
+        var headGrade = headRow.insertCell(-1);
+        var headAvg = headRow.insertCell(-1);
+        var headLetter = headRow.insertCell(-1);
+        var headCredits = headRow.insertCell(-1);
+        var headGraphic = headRow.insertCell(-1);
+        headCourse.outerHTML = "<th>Course Name</th>";
+        headGrade.outerHTML = "<th>Current Grade</th>";
+        headAvg.outerHTML = "<th>Class Average</th>";
+        headLetter.outerHTML = "<th>Letter Grade</th>";
+        headCredits.outerHTML = "<th>Credits</th>"
+        headGraphic.outerHTML = "<th>Grade Summary</th>";
+
+        //Need to edit this to add new rows for new classes on dashboard and to
+        //remove old rows
+        for (var name of course_names) {
+          var course = table.insertRow(-1)
+          var course_name = course.insertCell(-1)
+          var class_avg = course.insertCell(-1);
+          var grade = course.insertCell(-1);
+          var graphic = course.insertCell(-1);
+          var letter = course.insertCell(-1);
+          var credits = course.insertCell(-1);
+          course_name.innerHTML = "<a href =" + course_links[i] + ">" + name.innerHTML + "</a>";
+          grade.innerHTML = "-";
+          class_avg.innerHTML = "-";
+          letter.innerHTML = "-";
+          credits.innerHTML = "-";
+          graphic.innerHTML = "-";
+          i++;
       }
+    }
     });
     chrome.storage.sync.get(['key2'], function(result) {
       if (Object.values(result)[0] != undefined) {
           gpaTable.innerHTML = Object.values(result)[0].val;
+      } else {
+        var header = gpa_table.createTHead();
+        var headRow = header.insertRow(0);
+        var headEx = headRow.insertCell(-1);
+        var headCredits = headRow.insertCell(-1);
+        var headGPA = headRow.insertCell(-1);
+        headEx.outerHTML = "<th></th>";
+        headCredits.outerHTML = "<th>Total Credits</th>";
+        headGPA.outerHTML = "<th>GPA</th>";
+
+        var semesterRow = gpa_table.insertRow(-1);
+        var headSemester = semesterRow.insertCell(-1);
+        var semesterCredits = semesterRow.insertCell(-1);
+        var semesterGPA = semesterRow.insertCell(-1)
+        headSemester.outerHTML = "<th>Semester</th>";
+        semesterCredits.innerHTML = "-";
+        semesterGPA.innerHTML = "-";
+
+        var cumulativeRow = gpa_table.insertRow(-1);
+        var headCumulative = cumulativeRow.insertCell(-1);
+        var cumulativeCredits = cumulativeRow.insertCell(-1);
+        var cumulativeGPA = cumulativeRow.insertCell(-1);
+        headCumulative.outerHTML = "<th>Current Cumulative</th>";
+        cumulativeCredits.innerHTML = "-";
+        cumulativeGPA.innerHTML = "-";
+
+        cumulativeRow = gpa_table.insertRow(-1);
+        headCumulative = cumulativeRow.insertCell(-1);
+        headCumulative.outerHTML = "<th>New Cumulative</th>";
+        cumulativeCredits = cumulativeRow.insertCell(-1);
+        cumulativeGPA = cumulativeRow.insertCell(-1);
+        cumulativeCredits.innerHTML = "-";
+        cumulativeGPA.innerHTML = "-";
       }
     });
 
-    //Doesnt work
-    if (document.getElementsByClassName("Grade").length > 0) {
-      for (var i = 0; i < document.getElementsByClassName("Grade").length; i++) {
-        document.getElementsByClassName("Grade")[i].disabled = true;
-      }
+    // alert(num_courses);
+    // alert(table.rows.length - 1);
+    if (num_courses < table.rows.length - 1) {
+      removeCourse();
+    } else if (num_courses > table.rows.length - 1) {
+      //addCourse();
     }
+  }
 
-    if (table.innerHTML == "") {
-      var header = table.createTHead();
-      var headRow = header.insertRow(0);
-      var headCourse = headRow.insertCell(-1);
-      var headGrade = headRow.insertCell(-1);
-      var headAvg = headRow.insertCell(-1);
-      var headLetter = headRow.insertCell(-1);
-      var headCredits = headRow.insertCell(-1);
-      var headGraphic = headRow.insertCell(-1);
-      headCourse.outerHTML = "<th>Course Name</th>";
-      headGrade.outerHTML = "<th>Current Grade</th>";
-      headAvg.outerHTML = "<th>Class Average</th>";
-      headLetter.outerHTML = "<th>Letter Grade</th>";
-      headCredits.outerHTML = "<th>Credits</th>"
-      headGraphic.outerHTML = "<th>Grade Summary</th>";
-
-      //Need to edit this to add new rows for new classes on dashboard and to
-      //remove old rows
+  function removeCourse() {
+    var courseTable = document.getElementById("course_table");
+    var removeCourses = [];
+    for (var i = 1; i < courseTable.rows.length; i++) {
+      var course = courseTable.rows[i].cells[0].childNodes[0].innerHTML;
       for (var name of course_names) {
-        var course = table.insertRow(-1)
-        var course_name = course.insertCell(-1)
-        var class_avg = course.insertCell(-1);
-        var grade = course.insertCell(-1);
-        var graphic = course.insertCell(-1);
-        var letter = course.insertCell(-1);
-        var credits = course.insertCell(-1);
-        course_name.innerHTML = "<a href =" + course_links[i] + ">" + name.innerHTML + "</a>";
-        grade.innerHTML = "-";
-        class_avg.innerHTML = "-";
-        letter.innerHTML = "-";
-        credits.innerHTML = "-";
-        graphic.innerHTML = "-";
-        i++;
+        if (name == course) {
+          removeCourses.push(i);
+        }
       }
     }
-    if (gpa_table.innerHTML == "") {
-      var header = gpa_table.createTHead();
-      var headRow = header.insertRow(0);
-      var headEx = headRow.insertCell(-1);
-      var headCredits = headRow.insertCell(-1);
-      var headGPA = headRow.insertCell(-1);
-      headEx.outerHTML = "<th></th>";
-      headCredits.outerHTML = "<th>Total Credits</th>";
-      headGPA.outerHTML = "<th>GPA</th>";
-
-      var semesterRow = gpa_table.insertRow(-1);
-      var headSemester = semesterRow.insertCell(-1);
-      var semesterCredits = semesterRow.insertCell(-1);
-      var semesterGPA = semesterRow.insertCell(-1)
-      headSemester.outerHTML = "<th>Semester</th>";
-      semesterCredits.innerHTML = "-";
-      semesterGPA.innerHTML = "-";
-
-      var cumulativeRow = gpa_table.insertRow(-1);
-      var headCumulative = cumulativeRow.insertCell(-1);
-      var cumulativeCredits = cumulativeRow.insertCell(-1);
-      var cumulativeGPA = cumulativeRow.insertCell(-1);
-      headCumulative.outerHTML = "<th>Current Cumulative</th>";
-      cumulativeCredits.innerHTML = "-";
-      cumulativeGPA.innerHTML = "-";
-
-      cumulativeRow = gpa_table.insertRow(-1);
-      headCumulative = cumulativeRow.insertCell(-1);
-      headCumulative.outerHTML = "<th>New Cumulative</th>";
-      cumulativeCredits = cumulativeRow.insertCell(-1);
-      cumulativeGPA = cumulativeRow.insertCell(-1);
-      cumulativeCredits.innerHTML = "-";
-      cumulativeGPA.innerHTML = "-";
+    for (var i = 0; i < removeCourses.length; i++) {
+      courseTable.deleteRow(removeCourses[i]);
     }
   }
 
   function storeTable() {
     var table = document.getElementById("course_table");
     var gpa_table = document.getElementById("gpa_table");
+    if (gpa_table.rows[2].cells[1].innerHTML != "-") {
+      document.getElementById("current_credits").disabled = true;
+    }
+    if (gpa_table.rows[2].cells[2].innerHTML != "-") {
+      document.getElementById("current_gpa_whole").disabled = true;
+      document.getElementById("current_gpa_deci").disabled = true;
+    }
+    if (document.getElementsByClassName("Grade").length > 0) {
+      for (var i = 0; i < document.getElementsByClassName("Grade").length; i++) {
+        document.getElementsByClassName("Grade")[i].disabled = true;
+      }
+    }
+    if (document.getElementsByClassName("Credits").length > 0) {
+      for (var i = 0; i < document.getElementsByClassName("Credits").length; i++) {
+        document.getElementsByClassName("Credits")[i].disabled = true;
+      }
+    }
     var key = 'table_key', table_stored = {'val': table.innerHTML};
     chrome.storage.sync.set({key: table_stored}, function() {
       console.log('Saved', key, table_stored);

@@ -1,12 +1,13 @@
 {
   "name": "ELMS STAT",
-  "version": "0.0.2",
+  "version": "0.0.4",
   "description": "",
   "permissions": ["activeTab", "declarativeContent", "storage"],
   "content_scripts": [
     {
       "matches": ["https://umd.instructure.com/", "https://myelms.umd.edu/", "https://umd.instructure.com/courses/*/grades*", "https://myelms.umd.edu/courses/*/grades*"],
       "js": ["dashboard.js", "course.js"],
+      "run_at": "document_idle",
       "css": ["dashboard.css", "course.css"],
       "all_frames": true
     }
