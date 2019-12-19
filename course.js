@@ -1,16 +1,15 @@
 if (window.location.href.match(/https:\/\/umd\.instructure\.com\/courses\/.*\/grades/g)
     || window.location.href.match(/https:\/\/myelms\.umd\.edu\/courses\/.*\/grades/g)) {
 
-  if (document.readyState === 'loading') {  // Loading hasn't finished yet
-    document.addEventListener('DOMContentLoaded', startExtension);
-  } else {  // `DOMContentLoaded` has already fired
-    startExtension();
+  document.onreadystatechange = function () {
+    if (document.readyState === 'complete') {
+      startExtension();
+    }
   }
 
   function startExtension() {
     var points_earned = document.getElementsByClassName("grade");
     if (points_earned != undefined) {
-      // var user_letter_grade = document.getElementById("final_letter_grade_text").innerHTML;
       var user_grade = points_earned[points_earned.length - 1].innerHTML.match(/[-+]?([0-9]*\.[0-9]+|[0-9]+)/g)
       var points_possible = document.getElementsByClassName("possible points_possible");
       var check_avgs_exist = document.getElementsByClassName("ic-Table ic-Table--condensed score_details_table")[0];
@@ -35,48 +34,51 @@ if (window.location.href.match(/https:\/\/umd\.instructure\.com\/courses\/.*\/gr
         }
 
         var reg = /Mean:\n\s*[-+]?([0-9]*\.[0-9]+|[0-9]+)/g;
-        var i, k, class_avg = 0, total_weight = 0, sum = 0;
+        var class_avg = 0, total_weight = 0, sum = 0;
         var averages = document.getElementById("grades_summary").innerHTML.match(reg);
+        var show_more = document.getElementsByClassName("toggle_score_details_link tooltip");
         var contexts = document.getElementsByClassName("context");
         if (averages != undefined && contexts != undefined) {
-          for (k = 0, i = 0; i < averages.length; i++, k++) {
-            while (points_earned[k].innerHTML.match(/[-+]?([0-9]*\.[0-9]+|[0-9]+)/g) == null) {
+          for (k = 0, i = 0; i < averages.length && k < show_more.length; i++, k++) {
+            while (k < show_more.length &&
+             (points_earned[k].innerHTML.match(/Incomplete|Complete|[-+]?([0-9]*\.[0-9]+|[0-9]+)/g) == null || show_more[k].style.visibility == "hidden")) {
               k++;
             }
-            console.log("Points: " + points_earned[i].textContent);
-            var avg_match = averages[i].match(/[-+]?([0-9]*\.[0-9]+|[0-9]+)/g);
-            var point_match = points_possible[k].innerHTML.match(/[-+]?([0-9]*\.[0-9]+|[0-9]+)/g);
-            var grade = (parseFloat(avg_match, 10) / parseInt(point_match, 10)) * 100;
-            if (weighted_table != undefined) {
-              groups_graded.set(contexts[k].innerHTML, (groups_graded.get(contexts[k].innerHTML) + grade));
-              groups_size.set(contexts[k].innerHTML, (groups_size.get(contexts[k].innerHTML) + 1));
-            } else {
-              sum += grade;
+            if (k < show_more.length) {
+              var avg_match = averages[i].match(/[-+]?([0-9]*\.[0-9]+|[0-9]+)/g);
+              var point_match = points_possible[k].innerHTML.match(/[-+]?([0-9]*\.[0-9]+|[0-9]+)/g);
+              console.log("Average: " + avg_match + " Points Posssible: " + point_match);
+              var grade = (parseFloat(avg_match, 10) / parseInt(point_match, 10)) * 100;
+              if (weighted_table != undefined) {
+                groups_graded.set(contexts[k].innerHTML, (groups_graded.get(contexts[k].innerHTML) + grade));
+                groups_size.set(contexts[k].innerHTML, (groups_size.get(contexts[k].innerHTML) + 1));
+              } else {
+                sum += grade;
+              }
             }
           }
-        }
 
-        if (weighted_table != undefined) {
-          for (var k of groups_graded.keys()) {
-            groups_graded.set(k, ((groups_graded.get(k) / groups_size.get(k)) * group_weights.get(k)))
-          }
-          for (var k of groups_graded.keys()) {
-            if (!isNaN(groups_graded.get(k))){
-              class_avg += groups_graded.get(k);
-              total_weight += group_weights.get(k);
+          if (weighted_table != undefined) {
+            for (var k of groups_graded.keys()) {
+              groups_graded.set(k, ((groups_graded.get(k) / groups_size.get(k)) * group_weights.get(k)))
             }
+            for (var k of groups_graded.keys()) {
+              if (!isNaN(groups_graded.get(k))){
+                class_avg += groups_graded.get(k);
+                total_weight += group_weights.get(k);
+              }
+            }
+            class_avg /= total_weight;
+          } else {
+            class_avg = (sum / averages.length);
           }
-          class_avg /= total_weight;
-        } else {
-          class_avg = (sum / averages.length);
-        }
-        class_avg = class_avg.toFixed(2);
+          class_avg = class_avg.toFixed(2);
+      }
 
         var mainDiv = document.createElement("div");
         mainDiv.id = 'main_div';
 
         var currentDiv = document.getElementById("umd-howtouse");
-        alert(currentDiv)
         var classAvgDiv = document.createElement("div");
         var graphicLeft = document.createElement("div");
         var graphicRight = document.createElement("div");
@@ -94,11 +96,15 @@ if (window.location.href.match(/https:\/\/umd\.instructure\.com\/courses\/.*\/gr
         var classAvgContent = document.createTextNode("Average of the Class: " + class_avg + "%");
         classAvgDiv.appendChild(classAvgContent);
         graphicLeft.style.width = "" + (parseInt(class_avg) + 30) + "px";
-        graphicRight.style.width = "" + (100 - parseInt(class_avg) + 10) + "px";
+        if (user_grade <= 100) {
+          graphicRight.style.width = "" + (100 - parseInt(class_avg) + 10) + "px";
+        } else {
+          graphicRight.style.width = "" + (user_grade - parseInt(class_avg) + 10) + "px";
+        }
         graphicRight.style.left = "" + (parseInt(class_avg) + 30) + "px";
 
         gradeBlock.style.left = "" + (parseInt(user_grade) + 30) + "px";
-        gradeBlock.title = "Your Grade: " + user_grade;
+        gradeBlock.title = "Your Grade: " + user_grade + "%";
 
         parentDiv.insertBefore(mainDiv, currentDiv.nextSibling);
         currentDiv = document.getElementById("main_div");
