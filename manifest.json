@@ -1,6 +1,6 @@
 {
   "name": "ELMS STAT",
-  "version": "1.0.1",
+  "version": "1.0.0",
   "description": "",
   "permissions": ["activeTab", "declarativeContent", "storage", "unlimitedStorage"],
   "content_scripts": [
