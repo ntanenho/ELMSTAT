@@ -2,7 +2,7 @@
   "name": "ELMS STAT",
   "version": "0.0.4",
   "description": "",
-  "permissions": ["activeTab", "declarativeContent", "storage"],
+  "permissions": ["activeTab", "declarativeContent", "storage", "unlimitedStorage"],
   "content_scripts": [
     {
       "matches": ["https://umd.instructure.com/", "https://myelms.umd.edu/", "https://umd.instructure.com/courses/*/grades*", "https://myelms.umd.edu/courses/*/grades*"],

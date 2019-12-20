@@ -47,7 +47,7 @@ if (window.location.href.match(/https:\/\/umd\.instructure\.com\/courses\/.*\/gr
             if (k < show_more.length) {
               var avg_match = averages[i].match(/[-+]?([0-9]*\.[0-9]+|[0-9]+)/g);
               var point_match = points_possible[k].innerHTML.match(/[-+]?([0-9]*\.[0-9]+|[0-9]+)/g);
-              console.log("Average: " + avg_match + " Points Posssible: " + point_match);
+              // console.log("Average: " + avg_match + " Points Posssible: " + point_match);
               var grade = (parseFloat(avg_match, 10) / parseInt(point_match, 10)) * 100;
               if (weighted_table != undefined) {
                 groups_graded.set(contexts[k].innerHTML, (groups_graded.get(contexts[k].innerHTML) + grade));

@@ -11,35 +11,20 @@ if (window.location.href == "https://umd.instructure.com/" || window.location.hr
       var letter_grade = new Map([]);
       var frame_loads = 0;
       var iframe;
-      var select_whole = "<select class=whole name=Credits><option value= selected></option><option value=0>0</option><option value=1>1</option><option value=2>2</option>" +
-      "<option value=3>3</option><option value=4>4</option></select>";
-      var select_whole_0 = "<select class=whole name=Credits><option value=></option><option value=0 selected>0</option><option value=1>1</option><option value=2>2</option>" +
-      "<option value=3>3</option><option value=4>4</option></select>";
-      var select_whole_1 = "<select class=whole name=Credits><option value=></option><option value=0>0</option><option value=1 selected>1</option><option value=2>2</option>" +
-      "<option value=3>3</option><option value=4>4</option></select>";
-      var select_whole_2 = "<select class=whole name=Credits><option value=></option><option value=0>0</option><option value=1>1</option><option value=2  selected>2</option>" +
-      "<option value=3>3</option><option value=4>4</option></select>";
-      var select_whole_3 = "<select class=whole name=Credits><option value=></option><option value=0>0</option><option value=1>1</option><option value=2>2</option>" +
-      "<option value=3 selected>3</option><option value=4>4</option></select>";
-      var select_whole_4 = "<select class=whole name=Credits><option value=></option><option value=0>0</option><option value=1>1</option><option value=2>2</option>" +
-      "<option value=3>3</option><option value=4 selected>4</option></select>";
 
-
-      var select_credits = "<select class=Credits name=Credits><option value= selected></option><option value=0>0</option><option value=1>1</option><option value=2>2</option>" +
+      var select_credits = "<select class=Credits name=Credits><option value= selected></option><option value=1>1</option><option value=2>2</option>" +
       "<option value=3>3</option><option value=4>4</option><option value=5>5</option><option value=6>6</option></select>";
-      var select_0 = "<select class=Credits name=Credits><option value=></option><option value=0 selected>0</option><option value=1>1</option><option value=2>2</option>" +
+      var select_1 = "<select class=Credits name=Credits><option value=></option><option value=1 selected>1</option><option value=2>2</option>" +
       "<option value=3>3</option><option value=4>4</option><option value=5>5</option><option value=6>6</option></select>";
-      var select_1 = "<select class=Credits name=Credits><option value=></option><option value=0>0</option><option value=1 selected>1</option><option value=2>2</option>" +
+      var select_2 = "<select class=Credits name=Credits><option value=></option><option value=1>1</option><option value=2 selected>2</option>" +
       "<option value=3>3</option><option value=4>4</option><option value=5>5</option><option value=6>6</option></select>";
-      var select_2 = "<select class=Credits name=Credits><option value=></option><option value=0>0</option><option value=1>1</option><option value=2 selected>2</option>" +
-      "<option value=3>3</option><option value=4>4</option><option value=5>5</option><option value=6>6</option></select>";
-      var select_3 = "<select class=Credits name=Credits><option value=></option><option value=0>0</option><option value=1>1</option><option value=2>2</option>" +
+      var select_3 = "<select class=Credits name=Credits><option value=></option><option value=1>1</option><option value=2>2</option>" +
       "<option value=3 selected>3</option><option value=4>4</option><option value=5>5</option><option value=6>6</option></select>";
-      var select_4 = "<select class=Credits name=Credits><option value=></option><option value=0>0</option><option value=1>1</option><option value=2>2</option>" +
+      var select_4 = "<select class=Credits name=Credits><option value=></option><option value=1>1</option><option value=2>2</option>" +
       "<option value=3>3</option><option value=4 selected>4</option><option value=5>5</option><option value=6>6</option></select>";
-      var select_5 = "<select class=Credits name=Credits><option value=></option><option value=0>0</option><option value=1>1</option><option value=2>2</option>" +
+      var select_5 = "<select class=Credits name=Credits><option value=></option><option value=1>1</option><option value=2>2</option>" +
       "<option value=3>3</option><option value=4>4</option><option value=5 selected>5</option><option value=6>6</option></select>";
-      var select_6 = "<select class=Credits name=Credits><option value=></option><option value=0>0</option><option value=1>1</option><option value=2>2</option>" +
+      var select_6 = "<select class=Credits name=Credits><option value=></option><option value=1>1</option><option value=2>2</option>" +
       "<option value=3>3</option><option value=4>4</option><option value=5>5</option><option value=6 selected>6</option></select>";
 
 
@@ -165,11 +150,10 @@ if (window.location.href == "https://umd.instructure.com/" || window.location.hr
                 table.rows[i].cells[3].innerHTML = letterSelect(letter_grade.get(name));
                 g[k].addEventListener("change", gradeChange);
                 k++;
+              } else {
+                g[k].addEventListener("change", gradeChange);
+                k++;
               }
-              // } else {
-              //   g[k].addEventListener("change", gradeChange);
-              //   k++;
-              // }
               if (table.rows[i].cells[4].innerHTML == "-") {
                   table.rows[i].cells[4].innerHTML = select_credits;
                   c[j].addEventListener("change", creditsChange);
@@ -253,7 +237,7 @@ if (window.location.href == "https://umd.instructure.com/" || window.location.hr
         parentDiv.insertBefore(gpaTable, currentDiv.nextSibling);
         var gpa_table = document.getElementById("gpa_table");
 
-        chrome.storage.sync.get(['key'], function(result) {
+        chrome.storage.local.get(['key'], function(result) {
           if (Object.values(result)[0] != undefined) {
             table.innerHTML = Object.values(result)[0].val;
             if (num_courses < table.rows.length - 1) {
@@ -277,8 +261,6 @@ if (window.location.href == "https://umd.instructure.com/" || window.location.hr
             headCredits.outerHTML = "<th>Credits</th>"
             headGraphic.outerHTML = "<th>Grade Summary</th>";
 
-            //Need to edit this to add new rows for new classes on dashboard and to
-            //remove old rows
             for (var name of course_names) {
               var course = table.insertRow(-1)
               var course_name = course.insertCell(-1)
@@ -297,7 +279,7 @@ if (window.location.href == "https://umd.instructure.com/" || window.location.hr
           }
         }
         });
-        chrome.storage.sync.get(['key2'], function(result) {
+        chrome.storage.local.get(['key2'], function(result) {
           if (Object.values(result)[0] != undefined) {
               gpaTable.innerHTML = Object.values(result)[0].val;
           } else {
@@ -360,8 +342,8 @@ if (window.location.href == "https://umd.instructure.com/" || window.location.hr
         }
         for (var i = 0; i < course_names.length; i++) {
           if (!courses.includes(course_names[i].innerHTML)) {
-            var course = courseTable.insertRow(-1)
-            var course_name = course.insertCell(-1)
+            var course = courseTable.insertRow(i + 1);
+            var course_name = course.insertCell(-1);
             var class_avg = course.insertCell(-1);
             var grade = course.insertCell(-1);
             var graphic = course.insertCell(-1);
@@ -378,7 +360,6 @@ if (window.location.href == "https://umd.instructure.com/" || window.location.hr
       }
 
       function storeTable() {
-        console.log("Storing Table");
         var table = document.getElementById("course_table");
         var gpa_table = document.getElementById("gpa_table");
         if (gpa_table.rows[2].cells[1].innerHTML != "-") {
@@ -399,13 +380,12 @@ if (window.location.href == "https://umd.instructure.com/" || window.location.hr
           }
         }
         var key = 'table_key', table_stored = {'val': table.innerHTML};
-        chrome.storage.sync.set({key: table_stored}, function() {
+        chrome.storage.local.set({key: table_stored}, function() {
           console.log('Saved', key, table_stored);
         });
-        var key2 = 'gpa_table_key';
-        table_stored = {'val': gpa_table.innerHTML};
-        chrome.storage.sync.set({key2: table_stored}, function() {
-          console.log('Saved', key, table_stored);
+        var key2 = 'gpa_table_key', gpa_table_stored = {'val': gpa_table.innerHTML};
+        chrome.storage.local.set({key2: gpa_table_stored}, function() {
+          console.log('Saved', key2, gpa_table_stored);
         });
       }
 
@@ -445,35 +425,48 @@ if (window.location.href == "https://umd.instructure.com/" || window.location.hr
 
       function letterSelect(grade) {
         var inner = "";
-
-        if (grade == "A+") {
-          inner = select_Aplus;
-        } else if (grade == "A") {
-          inner = select_A;
-        } else if (grade == "A-") {
-          inner = select_Aminus;
-        } else if (grade == "B+") {
-          inner = select_Bplus;
-        } else if (grade == "B") {
-          inner = select_B;
-        } else if (grade == "B-") {
-          inner = select_Bminus;
-        } else if (grade == "C+") {
-          inner = select_Cplus;
-        } else if (grade == "C") {
-          inner = select_C;
-        } else if (grade == "C-") {
-          inner = select_Cminus;
-        } else if (grade == "D+") {
-          inner = select_Dplus;
-        } else if (grade == "D") {
-          inner = select_D;
-        } else if (grade == "D-") {
-          inner = select_Dminus;
-        } else if (grade == "F") {
-          inner = select_F;
-        } else {
-          this.innerHTML = select_start;
+        switch (grade) {
+          case "A+":
+            inner = select_Aplus;
+            break;
+          case "A":
+            inner = select_A;
+            break;
+          case "A-":
+            inner = select_Aminus;
+            break;
+          case "B+":
+            inner = select_Bplus;
+            break;
+          case "B":
+            inner = select_B;
+            break;
+          case "B-":
+            inner = select_Bminus;
+            break;
+          case "C+":
+            inner = select_Cplus;
+            break;
+          case "C":
+            inner = select_C;
+            break;
+          case "C-":
+            inner = select_Cminus;
+            break;
+          case "D+":
+            inner = select_Dplus;
+            break;
+          case "D":
+            inner = select_D;
+            break;
+          case "D-":
+            inner = select_Dminus;
+            break;
+          case "F":
+            inner = select_F;
+            break;
+          default:
+            this.innerHTML = select_start;
         }
         this.addEventListener("change", gradeChange);
         semesterGPA();
@@ -483,8 +476,6 @@ if (window.location.href == "https://umd.instructure.com/" || window.location.hr
       function creditsChange() {
         if (this.value == "") {
           this.innerHTML = select_credits;
-        } else if (this.value == 0) {
-          this.innerHTML = select_0;
         } else if (this.value == 1) {
           this.innerHTML = select_1;
         } else if (this.value == 2) {
