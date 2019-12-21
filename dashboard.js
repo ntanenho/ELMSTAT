@@ -233,6 +233,7 @@ if (window.location.href == "https://umd.instructure.com/" || window.location.hr
         currentDiv = table;
         parentDiv.insertBefore(update, currentDiv.nextSibling);
         currentDiv = document.getElementById("update_status");
+        currentDiv.style.visibility = "hidden";
         currentDiv.insertAdjacentElement("afterbegin", loader);
         parentDiv.insertBefore(gpaTable, currentDiv.nextSibling);
         var gpa_table = document.getElementById("gpa_table");
@@ -240,6 +241,7 @@ if (window.location.href == "https://umd.instructure.com/" || window.location.hr
         chrome.storage.local.get(['key'], function(result) {
           if (Object.values(result)[0] != undefined) {
             table.innerHTML = Object.values(result)[0].val;
+            currentDiv.style.visibility = "visible";
             if (num_courses < table.rows.length - 1) {
               removeCourse();
             } else if (num_courses > table.rows.length - 1) {
@@ -277,6 +279,7 @@ if (window.location.href == "https://umd.instructure.com/" || window.location.hr
               graphic.innerHTML = "-";
               i++;
           }
+          currentDiv.style.visibility = "visible";
         }
         });
         chrome.storage.local.get(['key2'], function(result) {

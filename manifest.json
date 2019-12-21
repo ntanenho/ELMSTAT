@@ -1,6 +1,6 @@
 {
   "name": "ELMS STAT",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "",
   "permissions": ["activeTab", "declarativeContent", "storage", "unlimitedStorage"],
   "content_scripts": [
@@ -33,6 +33,6 @@
     }
   },
   "content_security_policy": "script-src 'self' https://cdn.firebase.com https://*.firebaseio.com; object-src 'self'",
-  "web_accessible_resources": ["images/*.png"],
+  "web_accessible_resources": ["images/*.png", "popup.css"],
   "manifest_version": 2
 }

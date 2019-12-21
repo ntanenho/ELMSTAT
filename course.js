@@ -11,6 +11,9 @@ if (window.location.href.match(/https:\/\/umd\.instructure\.com\/courses\/.*\/gr
     var points_earned = document.getElementsByClassName("grade");
     if (points_earned != undefined) {
       var user_grade = points_earned[points_earned.length - 1].innerHTML.match(/[-+]?([0-9]*\.[0-9]+|[0-9]+)/g)
+      if (!user_grade) {
+        user_grade = -1;
+      }
       var points_possible = document.getElementsByClassName("possible points_possible");
       var check_avgs_exist = document.getElementsByClassName("ic-Table ic-Table--condensed score_details_table")[0];
       if (user_grade != undefined && points_possible != undefined && check_avgs_exist != undefined) {
@@ -93,41 +96,44 @@ if (window.location.href.match(/https:\/\/umd\.instructure\.com\/courses\/.*\/gr
         graphic.id = 'graphic';
         gradeBlock.id = 'grade_block';
 
-        var classAvgContent = document.createTextNode("Average of the Class: " + class_avg + "%");
-        classAvgDiv.appendChild(classAvgContent);
-        graphicLeft.style.width = "" + (parseInt(class_avg) + 30) + "px";
-        if (user_grade <= 100) {
-          graphicRight.style.width = "" + (100 - parseInt(class_avg) + 10) + "px";
-        } else {
-          graphicRight.style.width = "" + (user_grade - parseInt(class_avg) + 10) + "px";
+        if (user_grade != -1 && class_avg != 0) {
+          var classAvgContent = document.createTextNode("Average of the Class: " + class_avg + "%");
+          classAvgDiv.appendChild(classAvgContent);
+          classAvgDiv.style.textAlign = "center";
+          graphicLeft.style.width = "" + (parseInt(class_avg) + 30) + "px";
+          if (user_grade <= 100) {
+            graphicRight.style.width = "" + (100 - parseInt(class_avg) + 10) + "px";
+          } else {
+            graphicRight.style.width = "" + (user_grade - parseInt(class_avg) + 10) + "px";
+          }
+          graphicRight.style.left = "" + (parseInt(class_avg) + 30) + "px";
+          if (user_grade != "N/A")
+          gradeBlock.style.left = "" + (parseInt(user_grade) + 30) + "px";
+          gradeBlock.title = "Your Grade: " + user_grade + "%";
+
+          parentDiv.insertBefore(mainDiv, currentDiv.nextSibling);
+          currentDiv = document.getElementById("main_div");
+          currentDiv.insertAdjacentElement("beforeend", classAvgDiv);
+          currentDiv = document.getElementById("class_avg");
+          currentDiv.insertAdjacentElement("beforeend", graphic);
+          currentDiv = document.getElementById("graphic");
+          currentDiv.insertAdjacentElement("beforeend", graphicLeft);
+          currentDiv.insertAdjacentElement("beforeend", graphicRight);
+          currentDiv.insertAdjacentElement("beforeend", gradeBlock);
+
+          var button = document.getElementsByClassName("al-trigger Button Button--block")[0];
+          button.addEventListener("click", function() {
+            var list = document.getElementsByClassName("al-options ui-menu ui-widget ui-widget-content ui-corner-all ui-popup ui-kyle-menu use-css-transitions-for-show-hide")[0];
+            if (list.style.display != "none") {
+              var mainDiv = document.getElementById("main_div");
+              mainDiv.style.marginTop = "155px";
+            }
+            document.onmousedown = function() {
+              var mainDiv = document.getElementById("main_div");
+              mainDiv.style.marginTop = "20px";
+            }
+          });
         }
-        graphicRight.style.left = "" + (parseInt(class_avg) + 30) + "px";
-
-        gradeBlock.style.left = "" + (parseInt(user_grade) + 30) + "px";
-        gradeBlock.title = "Your Grade: " + user_grade + "%";
-
-        parentDiv.insertBefore(mainDiv, currentDiv.nextSibling);
-        currentDiv = document.getElementById("main_div");
-        currentDiv.insertAdjacentElement("beforeend", classAvgDiv);
-        currentDiv = document.getElementById("class_avg");
-        currentDiv.insertAdjacentElement("beforeend", graphic);
-        currentDiv = document.getElementById("graphic");
-        currentDiv.insertAdjacentElement("beforeend", graphicLeft);
-        currentDiv.insertAdjacentElement("beforeend", graphicRight);
-        currentDiv.insertAdjacentElement("beforeend", gradeBlock);
-
-        var button = document.getElementsByClassName("al-trigger Button Button--block")[0];
-        button.addEventListener("click", function(){
-          var list = document.getElementsByClassName("al-options ui-menu ui-widget ui-widget-content ui-corner-all ui-popup ui-kyle-menu use-css-transitions-for-show-hide")[0];
-          if (list.style.display != "none") {
-            var mainDiv = document.getElementById("main_div");
-            mainDiv.style.marginTop = "155px";
-          }
-          document.onmousedown = function() {
-            var mainDiv = document.getElementById("main_div");
-            mainDiv.style.marginTop = "20px";
-          }
-        });
       }
     }
   }
