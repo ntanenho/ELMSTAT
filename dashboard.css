@@ -1,7 +1,6 @@
 #course_table {
   font-family: "Lato","Helvetica Neue",Helvetica,Arial,sans-serif;
   border-collapse: collapse;
-  margin-left: 24px;
   float: right;
   box-shadow: 0 2px 5px rgba(0,0,0,0.3)
 }
@@ -9,32 +8,35 @@
    font-family: "Lato","Helvetica Neue",Helvetica,Arial,sans-serif;
    border-collapse: collapse;
    float: right;
-   margin-bottom: 100px;
    margin-top:30px;
    width: 40%;
    box-shadow: 0 2px 5px rgba(0,0,0,0.3)
  }
-#course_table td, #course_table th, #gpa_table td, #gpa_table th {
+#course_table td, #gpa_table td {
   border: 1px solid #ddd;
-  padding: .5px;
-  width: 1000px;
+  padding: 1px;
   text-align: center;
-  white-space: nowrap;
 }
 #course_table tr:nth-child(even) {
   background-color: #f2f2f2;
 }
+#main_wrapper {
+  margin-bottom: 24px;
+  float: left;
+}
 #course_table th, #gpa_table th {
-  padding-top: 12px;
-  padding-bottom: 12px;
+  border: 1px solid #ddd;
   text-align: center;
+  padding-left: 40px;
+  padding-right: 40px;
+  padding-top: 10px;
+  padding-bottom: 10px;
   background-color: #EE0612;
   color: white;
 }
 
 #update_status {
   float: left;
-  margin-left: 50px;
   margin-top: 5px;
 }
 #loader {
@@ -45,7 +47,7 @@
   width: 10px;
   height: 10px;
   animation: spin 2s linear infinite;
-  margin-left: -20px;
+  margin-right: 5px;
   margin-top: 5px;
 }
 #check {
@@ -56,36 +58,41 @@
   color: #00AC18
 }
 .Grade {
-   text-align: center;
+   position: relative;
+   margin: 20px;
    width: 50%;
    box-sizing: border-box;
    -webkit-box-sizing:border-box;
    -moz-box-sizing: border-box;
 }
 .Credits {
-  text-align: center;
-  width: 60%;
+ position: relative;
+  width: 50%;
+  margin: 20px;
   box-sizing: border-box;
   -webkit-box-sizing:border-box;
   -moz-box-sizing: border-box;
 }
 #current_gpa_whole {
   text-align: center;
-  width: 32%;
+  width: 25%;
+  margin-top: 10px;
   box-sizing: border-box;
   -webkit-box-sizing:border-box;
   -moz-box-sizing: border-box;
 }
 #current_gpa_deci {
   text-align: center;
-  width: 52%;
+  width: 40%;
+  margin-top: 10px;
   box-sizing: border-box;
   -webkit-box-sizing:border-box;
   -moz-box-sizing: border-box;
 }
 #current_credits {
   text-align: center;
-  width: 60%;
+  width: 40%;
+  margin: 20px;
   box-sizing: border-box;
   -webkit-box-sizing:border-box;
   -moz-box-sizing: border-box;

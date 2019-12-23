@@ -42,11 +42,10 @@
 #graphic {
   cursor: pointer;
   height: 30px;
-  margin-left: 30px;
-  margin-top: 20px;
+  margin: 20px;
   width: 160px;
   position: relative;
-  margin-right: 30px;
+  text-align: center;
 }
 #grade_block {
   position: absolute;

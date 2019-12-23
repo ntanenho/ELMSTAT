@@ -214,7 +214,6 @@ if (window.location.href == "https://umd.instructure.com/" || window.location.hr
           var update = document.getElementById("update_status");
           document.getElementById("loader").remove();
           update.innerHTML = "Table Up to Date";
-          update.style.marginLeft = "33px";
           var check = document.createElement("img");
           check.id = "check";
 
@@ -232,20 +231,25 @@ if (window.location.href == "https://umd.instructure.com/" || window.location.hr
       }
 
       function createTable() {
+        var mainWrapper = document.createElement("div");
         var courseTable = document.createElement("table");
         var gpaTable = document.createElement("table");
         var update = document.createElement("div");
         var loader = document.createElement("div");
-        var parentDiv = document.getElementById("content-wrapper");
-        var currentDiv = document.getElementById("content");
+        var parentDiv = document.getElementById("content");
+        var currentDiv = document.getElementById("dashboard");
         var i = 0;
 
+        mainWrapper.id = "main_wrapper";
         courseTable.id = "course_table";
         gpaTable.id = "gpa_table";
         update.id = "update_status";
         update.innerHTML = "Table Updating ...";
         loader.id = "loader";
-        parentDiv.insertBefore(courseTable, currentDiv.nextSibling);
+        parentDiv.insertBefore(mainWrapper, currentDiv.nextSibling);
+        parentDiv = document.getElementById("main_wrapper");
+        parentDiv.appendChild(courseTable);
+
 
         var table = document.getElementById("course_table");
         currentDiv = table;
@@ -418,12 +422,11 @@ if (window.location.href == "https://umd.instructure.com/" || window.location.hr
         document.getElementById("loader").remove();
         if (table.rows.length == 1) {
           update.innerHTML = "Change view to Card View and reload the page to update.";
-          update.style.marginLeft = "33px";
         } else {
           update.innerHTML = "Table Up to Date (Change view to Card View and reload the page to update)";
-          update.style.marginLeft = "33px";
           var check = document.createElement("img");
           check.id = "check";
+
           // images/baseline_check_black_18dp.png made by [Maxim Basinski](https://www.flaticon.com/authors/maxim-basinski) from www.flaticon.com
           check.src = chrome.extension.getURL("images/baseline_check_black_18dp.png");
         }
