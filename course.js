@@ -16,7 +16,7 @@ if (window.location.href.match(/https:\/\/umd\.instructure\.com\/courses\/.*\/gr
       }
       var points_possible = document.getElementsByClassName("possible points_possible");
       var check_avgs_exist = document.getElementsByClassName("ic-Table ic-Table--condensed score_details_table")[0];
-      if (user_grade != undefined && points_possible != undefined && check_avgs_exist != undefined) {
+      if (user_grade != -1 && points_possible != undefined && check_avgs_exist != undefined) {
 
         var weighted_table = document.getElementsByClassName("summary")[0];
         if (weighted_table != undefined) {
@@ -50,7 +50,6 @@ if (window.location.href.match(/https:\/\/umd\.instructure\.com\/courses\/.*\/gr
             if (k < show_more.length) {
               var avg_match = averages[i].match(/[-+]?([0-9]*\.[0-9]+|[0-9]+)/g);
               var point_match = points_possible[k].innerHTML.match(/[-+]?([0-9]*\.[0-9]+|[0-9]+)/g);
-              // console.log("Average: " + avg_match + " Points Posssible: " + point_match);
               var grade = (parseFloat(avg_match, 10) / parseInt(point_match, 10)) * 100;
               if (weighted_table != undefined) {
                 groups_graded.set(contexts[k].innerHTML, (groups_graded.get(contexts[k].innerHTML) + grade));
@@ -96,7 +95,7 @@ if (window.location.href.match(/https:\/\/umd\.instructure\.com\/courses\/.*\/gr
         graphic.id = 'graphic';
         gradeBlock.id = 'grade_block';
 
-        if (user_grade != -1 && class_avg != 0) {
+        if (user_grade != -1 && class_avg != 0 && !isNaN(class_avg)) {
           var classAvgContent = document.createTextNode("Average of the Class: " + class_avg + "%");
           classAvgDiv.appendChild(classAvgContent);
           classAvgDiv.style.textAlign = "center";
