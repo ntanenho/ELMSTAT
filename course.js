@@ -150,22 +150,24 @@ if (window.location.href.match(/https:\/\/umd\.instructure\.com\/courses\/.*\/gr
     var graphicLeft = document.getElementById("graphic_left");
     var graphicRight = document.getElementById("graphic_right");
     var gradeBlock = document.getElementById("grade_block");
-    if (screen_size.matches && window.self == window.top) {
-      if (window.matchMedia("(max-width: 568px)").matches) {
-        graphic.style.left = (window.innerWidth / 8)  + "px";
+    if (graphic != null && graphicLeft != null && graphicRight != null && gradeBlock != null) {
+      if (screen_size.matches && window.self == window.top) {
+        if (window.matchMedia("(max-width: 568px)").matches) {
+          graphic.style.left = (window.innerWidth / 8)  + "px";
+        } else {
+          graphic.style.left = (window.innerWidth / 20)  + "px";
+        }
+        graphicLeft.style.width = (window.innerWidth / 4)  + "px";
+        graphicRight.style.width = (window.innerWidth / 5)  + "px";
+        graphicRight.style.left = (window.innerWidth / 4) + "px";
+        gradeBlock.style.left = (window.innerWidth / 4) + "px";
       } else {
-        graphic.style.left = (window.innerWidth / 20)  + "px";
+        graphic.style.left = "10px";
+        graphicLeft.style.width = graphicLeftSize + "px";
+        graphicRight.style.width = graphicRightSize + "px";
+        graphicRight.style.left = graphicRightLeft + "px";
+        gradeBlock.style.left = gradeBlockLeft + "px";
       }
-      graphicLeft.style.width = (window.innerWidth / 4)  + "px";
-      graphicRight.style.width = (window.innerWidth / 5)  + "px";
-      graphicRight.style.left = (window.innerWidth / 4) + "px";
-      gradeBlock.style.left = (window.innerWidth / 4) + "px";
-    } else {
-      graphic.style.left = "10px";
-      graphicLeft.style.width = graphicLeftSize + "px";
-      graphicRight.style.width = graphicRightSize + "px";
-      graphicRight.style.left = graphicRightLeft + "px";
-      gradeBlock.style.left = gradeBlockLeft + "px";
     }
   }
 }

@@ -341,10 +341,10 @@ if (window.location.href == "https://umd.instructure.com/" || window.location.hr
               var list = document.getElementsByClassName("al-options ui-menu ui-widget ui-widget-content ui-corner-all ui-popup ui-kyle-menu use-css-transitions-for-show-hide")[0];
               var mainWrapper = document.getElementById("main_wrapper");
               if (list.style.display != "none") {
-                mainWrapper.style.marginTop = "155px";
+                mainWrapper.style.marginTop = "500px";
               }
               document.onmousedown = function() {
-                mainWrapper.style.marginTop = "0px";
+                mainWrapper.style.marginTop = "355px";
               }
             }
           });
@@ -438,7 +438,7 @@ if (window.location.href == "https://umd.instructure.com/" || window.location.hr
         var table = document.getElementById("course_table");
         document.getElementById("loader").remove();
         if (table.rows.length == 1) {
-          update.innerHTML = "Change view to Card View and reload the page to update.";
+          update.innerHTML = "Change view to Card View by clicking on the three dot menu and reload the page to update.";
         } else {
           update.innerHTML = "Table Up to Date (Change view to Card View and reload the page to update)";
           var check = document.createElement("img");
