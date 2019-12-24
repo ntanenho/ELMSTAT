@@ -102,7 +102,7 @@ if (window.location.href.match(/https:\/\/umd\.instructure\.com\/courses\/.*\/gr
           var classAvgContent = document.createTextNode("Average of the Class: " + class_avg + "%");
           classAvgDiv.appendChild(classAvgContent);
           classAvgDiv.style.textAlign = "center";
-          if (user_grade <= 100) {
+          if (user_grade <= 100 && class_avg <= 100) {
             graphicRight.style.width = "" + (100 - parseInt(class_avg) + 10) + "px";
             graphicRightSize = (100 - parseInt(class_avg) + 10);
             graphicLeft.style.width = "" + (parseInt(class_avg) + 30) + "px";

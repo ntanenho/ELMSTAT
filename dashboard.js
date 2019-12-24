@@ -472,11 +472,8 @@ if (window.location.href == "https://umd.instructure.com/" || window.location.hr
         }
         var key = 'key', table_stored = {'val': table.innerHTML};
         var key2 = 'key2', gpa_table_stored = {'val': gpa_table.innerHTML};
-        chrome.storage.local.set({key: table_stored}, function() {
-          console.log('Saved', key, table_stored);
-        });
-        chrome.storage.local.set({key2: gpa_table_stored}, function() {
-          console.log('Saved', key2, gpa_table_stored);
+        chrome.storage.local.set({key: table_stored, key2: gpa_table_stored}, function() {
+            // Do nothing
         });
       }
 
