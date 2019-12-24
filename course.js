@@ -102,19 +102,25 @@ if (window.location.href.match(/https:\/\/umd\.instructure\.com\/courses\/.*\/gr
           var classAvgContent = document.createTextNode("Average of the Class: " + class_avg + "%");
           classAvgDiv.appendChild(classAvgContent);
           classAvgDiv.style.textAlign = "center";
-          graphicLeft.style.width = "" + (parseInt(class_avg) + 30) + "px";
-          graphicLeftSize = (parseInt(class_avg) + 30);
           if (user_grade <= 100) {
             graphicRight.style.width = "" + (100 - parseInt(class_avg) + 10) + "px";
             graphicRightSize = (100 - parseInt(class_avg) + 10);
+            graphicLeft.style.width = "" + (parseInt(class_avg) + 30) + "px";
+            graphicLeftSize = (parseInt(class_avg) + 30);
+            graphicRight.style.left = "" + (parseInt(class_avg) + 30) + "px";
+            graphicRightLeft = (parseInt(class_avg) + 30);
+            gradeBlock.style.left = "" + (parseInt(user_grade) + 30) + "px";
+            gradeBlockLeft = (parseInt(user_grade) + 30);
           } else {
             graphicRight.style.width = "" + (user_grade - parseInt(class_avg) + 10) + "px";
-            graphicRightSize = (100 - parseInt(class_avg) + 10);
+            graphicRightSize = (user_grade - parseInt(class_avg) + 10);
+            graphicLeft.style.width = "" + ((parseInt(class_avg) + 120) / 2) + "px";
+            graphicLeftSize = (parseInt(class_avg) + 120) / 2;
+            graphicRight.style.left = "" + ((parseInt(class_avg) + 120) / 2) + "px";
+            graphicRightLeft = (parseInt(class_avg) + 120) / 2;
+            gradeBlock.style.left = "" + ((parseInt(user_grade) + 120) / 2) + "px";
+            gradeBlockLeft = (parseInt(user_grade) + 120) / 2;
           }
-          graphicRight.style.left = "" + (parseInt(class_avg) + 30) + "px";
-          graphicRightLeft = (parseInt(class_avg) + 30);
-          gradeBlock.style.left = "" + (parseInt(user_grade) + 30) + "px";
-          gradeBlockLeft = (parseInt(user_grade) + 30);
           gradeBlock.title = "Your Grade: " + user_grade + "%";
 
           parentDiv.insertBefore(mainDiv, currentDiv.nextSibling);
