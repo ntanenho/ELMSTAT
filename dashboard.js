@@ -559,7 +559,6 @@ if (window.location.href == "https://umd.instructure.com/" || window.location.hr
           default:
             this.innerHTML = select_start;
         }
-        this.addEventListener("change", gradeChange);
         semesterGPA();
         return inner;
       }
@@ -596,6 +595,7 @@ if (window.location.href == "https://umd.instructure.com/" || window.location.hr
         }
         var semesterCredits = gpaTable.rows[1].cells[1];
         semesterCredits.innerHTML = "" + totalCredits;
+        semesterGPA();
         cumulativeCredits(null);
       }
 
