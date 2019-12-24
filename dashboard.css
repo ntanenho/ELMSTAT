@@ -1,7 +1,6 @@
 #course_table {
   font-family: "Lato","Helvetica Neue",Helvetica,Arial,sans-serif;
   border-collapse: collapse;
-  /* float: right; */
   padding: 12px;
   box-shadow: 0 2px 5px rgba(0,0,0,0.3);
 }
@@ -24,7 +23,6 @@
 #main_wrapper {
   display: inline-block;
   position: relative;
-  margin-top: 180px;
   margin-bottom: 50px;
   padding-right: 20px;
 

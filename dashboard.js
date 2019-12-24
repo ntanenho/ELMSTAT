@@ -2,6 +2,7 @@ if (window.location.href == "https://umd.instructure.com/" || window.location.hr
   document.onreadystatechange = function () {
     if (document.readyState === 'complete') {
       window.addEventListener("beforeunload", storeTable);
+      window.addEventListener('resize', resizeWindow);
       var course_names = document.getElementsByClassName("ic-DashboardCard__header-subtitle ellipsis");
       var course_links = document.getElementsByClassName("ic-DashboardCard__link");
       var num_courses = course_names.length;
@@ -72,7 +73,6 @@ if (window.location.href == "https://umd.instructure.com/" || window.location.hr
       "<option value=1.0>D</option><option value=0.7>D-</option><option value=0.0 selected>F</option></select>";
 
       createTable();
-      window.addEventListener('resize', resizeWindow);
 
       function startFrames() {
         for (var i = 0; i < num_courses; i++) {
@@ -185,12 +185,12 @@ if (window.location.href == "https://umd.instructure.com/" || window.location.hr
               }
           }
           if (gpa_table.rows[2].cells[1].innerHTML == "-") {
-              gpa_table.rows[2].cells[1].innerHTML = "<input type=number id=current_credits name=credits min=0 max=999 value=>"
+              gpa_table.rows[2].cells[1].innerHTML = "<input type=number id=current_credits name=credits min=0 max=999 value=>";
               document.getElementById("current_credits").addEventListener("input", cumulativeCredits);
-              document.getElementById("current_credits").onkeypress = function() {if (this.value.length==3) {return false;} if (event.charCode == 46 || event.charCode == 45) event.preventDefault();};
+              document.getElementById("current_credits").onkeypress = function() {if (this.value.length == 3) {return false;} if (event.charCode == 46 || event.charCode == 45) { event.preventDefault(); }};
           } else {
             document.getElementById("current_credits").addEventListener("input", cumulativeCredits);
-            document.getElementById("current_credits").onkeypress = function(event) {if (this.value.length==3) {return false;} if (event.charCode == 46 || event.charCode == 45) event.preventDefault();};
+            document.getElementById("current_credits").onkeypress = function(event) {if (this.value.length == 3) {return false;} if (event.charCode == 46 || event.charCode == 45) event.preventDefault();};
           }
 
           if (gpa_table.rows[2].cells[2].innerHTML == "-") {
@@ -334,7 +334,23 @@ if (window.location.href == "https://umd.instructure.com/" || window.location.hr
             cumulativeCredits.innerHTML = "-";
             cumulativeGPA.innerHTML = "-";
           }
+
+          var button = document.getElementsByClassName("al-trigger Button Button--block")[0];
+          button.addEventListener("click", function() {
+            if (window.matchMedia("(max-width: 1248px)").matches && window.matchMedia("(min-width: 992px)").matches) {
+              var list = document.getElementsByClassName("al-options ui-menu ui-widget ui-widget-content ui-corner-all ui-popup ui-kyle-menu use-css-transitions-for-show-hide")[0];
+              var mainWrapper = document.getElementById("main_wrapper");
+              if (list.style.display != "none") {
+                mainWrapper.style.marginTop = "155px";
+              }
+              document.onmousedown = function() {
+                mainWrapper.style.marginTop = "0px";
+              }
+            }
+          });
+
           currentDiv.style.visibility = "visible";
+          resizeWindow();
           if (course_names.length > 0) {
             sortRows();
             addCourse();
