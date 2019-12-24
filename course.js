@@ -3,7 +3,10 @@ if (window.location.href.match(/https:\/\/umd\.instructure\.com\/courses\/.*\/gr
 
   document.onreadystatechange = function () {
     if (document.readyState === 'complete') {
+      window.addEventListener('resize', resizeWindow);
+      var graphicLeftSize = 0, graphicRightSize = 0, graphicRightLeft = 0, gradeBlockLeft = 0;
       startExtension();
+      resizeWindow();
     }
   }
 
@@ -100,14 +103,18 @@ if (window.location.href.match(/https:\/\/umd\.instructure\.com\/courses\/.*\/gr
           classAvgDiv.appendChild(classAvgContent);
           classAvgDiv.style.textAlign = "center";
           graphicLeft.style.width = "" + (parseInt(class_avg) + 30) + "px";
+          graphicLeftSize = (parseInt(class_avg) + 30);
           if (user_grade <= 100) {
             graphicRight.style.width = "" + (100 - parseInt(class_avg) + 10) + "px";
+            graphicRightSize = (100 - parseInt(class_avg) + 10);
           } else {
             graphicRight.style.width = "" + (user_grade - parseInt(class_avg) + 10) + "px";
+            graphicRightSize = (100 - parseInt(class_avg) + 10);
           }
           graphicRight.style.left = "" + (parseInt(class_avg) + 30) + "px";
-          if (user_grade != "N/A")
+          graphicRightLeft = (parseInt(class_avg) + 30);
           gradeBlock.style.left = "" + (parseInt(user_grade) + 30) + "px";
+          gradeBlockLeft = (parseInt(user_grade) + 30);
           gradeBlock.title = "Your Grade: " + user_grade + "%";
 
           parentDiv.insertBefore(mainDiv, currentDiv.nextSibling);
@@ -134,6 +141,31 @@ if (window.location.href.match(/https:\/\/umd\.instructure\.com\/courses\/.*\/gr
           });
         }
       }
+    }
+  }
+
+  function resizeWindow() {
+    var screen_size = window.matchMedia("(max-width: 1139px)");
+    var graphic = document.getElementById("graphic");
+    var graphicLeft = document.getElementById("graphic_left");
+    var graphicRight = document.getElementById("graphic_right");
+    var gradeBlock = document.getElementById("grade_block");
+    if (screen_size.matches && window.self == window.top) {
+      if (window.matchMedia("(max-width: 568px)").matches) {
+        graphic.style.left = (window.innerWidth / 8)  + "px";
+      } else {
+        graphic.style.left = (window.innerWidth / 20)  + "px";
+      }
+      graphicLeft.style.width = (window.innerWidth / 4)  + "px";
+      graphicRight.style.width = (window.innerWidth / 5)  + "px";
+      graphicRight.style.left = (window.innerWidth / 4) + "px";
+      gradeBlock.style.left = (window.innerWidth / 4) + "px";
+    } else {
+      graphic.style.left = "10px";
+      graphicLeft.style.width = graphicLeftSize + "px";
+      graphicRight.style.width = graphicRightSize + "px";
+      graphicRight.style.left = graphicRightLeft + "px";
+      gradeBlock.style.left = gradeBlockLeft + "px";
     }
   }
 }

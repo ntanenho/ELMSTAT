@@ -2,7 +2,6 @@ if (window.location.href == "https://umd.instructure.com/" || window.location.hr
   document.onreadystatechange = function () {
     if (document.readyState === 'complete') {
       window.addEventListener("beforeunload", storeTable);
-      window.addEventListener('resize', resizeWindow);
       var course_names = document.getElementsByClassName("ic-DashboardCard__header-subtitle ellipsis");
       var course_links = document.getElementsByClassName("ic-DashboardCard__link");
       var num_courses = course_names.length;
@@ -73,6 +72,7 @@ if (window.location.href == "https://umd.instructure.com/" || window.location.hr
       "<option value=1.0>D</option><option value=0.7>D-</option><option value=0.0 selected>F</option></select>";
 
       createTable();
+      window.addEventListener('resize', resizeWindow);
 
       function startFrames() {
         for (var i = 0; i < num_courses; i++) {
@@ -671,7 +671,6 @@ if (window.location.href == "https://umd.instructure.com/" || window.location.hr
 
       function resizeWindow() {
         var screen_size = window.matchMedia("(max-width: 992px)");
-        console.log("size change");
         if (screen_size.matches) {
           right_side = document.getElementById("right-side-wrapper");
           right_side.style.float = "left";
