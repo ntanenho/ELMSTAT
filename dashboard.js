@@ -3,15 +3,16 @@ if (window.location.href == "https://umd.instructure.com/" || window.location.hr
     if (document.readyState === 'complete') {
       window.addEventListener("beforeunload", storeTable);
       window.addEventListener('resize', resizeWindow);
-      var course_names = document.getElementsByClassName("ic-DashboardCard__header-subtitle ellipsis");
-      var course_links = document.getElementsByClassName("ic-DashboardCard__link");
-      var num_courses = course_names.length;
+      var temp_course_names = document.getElementsByClassName("ic-DashboardCard__header-subtitle ellipsis");
+      var temp_course_links = document.getElementsByClassName("ic-DashboardCard__link");
+      var course_names = [], course_links = [];
       var grades = new Map([]);
       var class_avgs = new Map([]);
       var graphics = new Map([]);
       var letter_grade = new Map([]);
       var frame_loads = 0;
       var iframe;
+      var not_in_card_view = false;
 
       var select_credits = "<select class=Credits name=Credits><option value= selected></option><option value=1>1</option><option value=2>2</option>" +
       "<option value=3>3</option><option value=4>4</option><option value=5>5</option><option value=6>6</option></select>";
@@ -75,16 +76,16 @@ if (window.location.href == "https://umd.instructure.com/" || window.location.hr
       createTable();
 
       function startFrames() {
-        for (var i = 0; i < num_courses; i++) {
+        for (var i = 0; i < course_names.length; i++) {
           iframe = document.createElement("iframe");
-          iframe.setAttribute("src", course_links[i].href + "/grades");
+          iframe.setAttribute("src", course_links[i] + "/grades");
           iframe.id = "i_frame" + i;
           iframe.height = 0;
           iframe.width = 0;
           iframe.style.border = "none";
           document.body.appendChild(iframe);
         }
-        for (var i = 0; i < num_courses; i++) {
+        for (var i = 0; i < course_names.length; i++) {
             document.getElementById('i_frame' + i).onload = function() {
             if (this.contentDocument.getElementById('class_avg') != undefined) {
               var main = this.contentDocument.getElementById('class_avg').innerHTML;
@@ -122,10 +123,11 @@ if (window.location.href == "https://umd.instructure.com/" || window.location.hr
             continueCode();
           };
         }
+        return true;
       }
 
       function continueCode() {
-        if (frame_loads == num_courses) {
+        if (frame_loads == course_names.length) {
           var table = document.getElementById("course_table");
           var gpa_table = document.getElementById("gpa_table");
           var k = 0, j = 0;
@@ -147,13 +149,12 @@ if (window.location.href == "https://umd.instructure.com/" || window.location.hr
               document.getElementsByClassName("Credits")[i].disabled = false;
             }
           }
-
           var g = document.getElementsByClassName("Grade");
           var c = document.getElementsByClassName("Credits");
           for (var i = 1; i <= course_names.length; i++) {
-              var name = course_names[i - 1].innerHTML;
-              table.rows[i].cells[1].innerHTML = "<a href = " + course_links[i - 1].href + "/grades>" + grades.get(name) + "</a>";
-              table.rows[i].cells[2].innerHTML = "<a href = " + course_links[i - 1].href + "/grades>" + class_avgs.get(name) + "</a>";
+              var name = course_names[i - 1];
+              table.rows[i].cells[1].innerHTML = "<a href = " + course_links[i - 1] + "/grades>" + grades.get(name) + "</a>";
+              table.rows[i].cells[2].innerHTML = "<a href = " + course_links[i - 1] + "/grades>" + class_avgs.get(name) + "</a>";
 
               if (letter_grade.get(name) == "" && table.rows[i].cells[3].innerHTML == "-") {
                 table.rows[i].cells[3].innerHTML = select_start;
@@ -187,46 +188,114 @@ if (window.location.href == "https://umd.instructure.com/" || window.location.hr
           if (gpa_table.rows[2].cells[1].innerHTML == "-") {
               gpa_table.rows[2].cells[1].innerHTML = "<input type=number id=current_credits name=credits min=0 max=999 value=>";
               document.getElementById("current_credits").addEventListener("input", cumulativeCredits);
-              document.getElementById("current_credits").onkeypress = function() {if (this.value.length == 3) {return false;} if (event.charCode == 46 || event.charCode == 45) { event.preventDefault(); }};
+              document.getElementById("current_credits").onkeypress = function() {
+                var selectionLength = this.selectionEnd - this.selectionStart;
+                if (this.value.length == 3 && selectionLength == 0) {
+                  return false;
+                }
+                if (event.charCode == 46 || event.charCode == 45) {
+                   event.preventDefault();
+                 }
+               };
           } else {
             document.getElementById("current_credits").addEventListener("input", cumulativeCredits);
-            document.getElementById("current_credits").onkeypress = function(event) {if (this.value.length == 3) {return false;} if (event.charCode == 46 || event.charCode == 45) event.preventDefault();};
+            document.getElementById("current_credits").onkeypress = function(event) {
+              var selectionLength = this.selectionEnd - this.selectionStart;
+              if (this.value.length == 3 && selectionLength == 0) {
+                return false;
+              }
+              if (event.charCode == 46 || event.charCode == 45) {
+                 event.preventDefault();
+               }
+             };
           }
 
           if (gpa_table.rows[2].cells[2].innerHTML == "-") {
             gpa_table.rows[2].cells[2].innerHTML = "<div>" + "<input type=number id=current_gpa_whole name=gpa_whole value=><span> . <input type=number id=current_gpa_deci name=gpa_deci value=></span></div>";
-            document.getElementById("current_gpa_whole").onkeypress = function(event) {if (this.value.length == 1) {return false;} if ((event.charCode >= 53 && event.charCode <= 57)
-             || event.charCode == 45 || event.charCode == 46) {event.preventDefault();} if (event.charCode == 52) {document.getElementById("current_gpa_deci").value = "000"; document.getElementById("current_gpa_deci").disabled = true;}};
-            document.getElementById("current_gpa_whole").onkeydown = function(event) {if (this.value == "4" && (event.key == "Backspace" || event.key == "Delete"))
-              {document.getElementById("current_gpa_deci").value = ""; document.getElementById("current_gpa_deci").disabled = false;}}
+            document.getElementById("current_gpa_whole").onkeypress = function(event) {
+              var selectionLength = this.selectionEnd - this.selectionStart;
+              if (this.value.length == 1 && selectionLength == 0) {
+                return false;
+              }
+              if ((event.charCode >= 53 && event.charCode <= 57) || event.charCode == 45 || event.charCode == 46) {
+                event.preventDefault();
+              }
+              if (event.charCode == 52) {
+                document.getElementById("current_gpa_deci").value = "000";
+                document.getElementById("current_gpa_deci").disabled = true;
+              }
+            };
+            document.getElementById("current_gpa_whole").onkeydown = function(event) {
+              if (this.value == "4" && (event.key == "Backspace" || event.key == "Delete")) {
+                document.getElementById("current_gpa_deci").value = "";
+                document.getElementById("current_gpa_deci").disabled = false;
+              }
+            };
             document.getElementById("current_gpa_whole").addEventListener("input", cumulativeGPA_Whole);
-            document.getElementById("current_gpa_deci").onkeypress = function(event) {if (this.value.length == 3) {return false;} if (event.charCode == 45 || event.charCode == 46) {event.preventDefault();}}
+            document.getElementById("current_gpa_deci").onkeypress = function(event) {
+              var selectionLength = this.selectionEnd - this.selectionStart;
+              if (this.value.length == 3 && selectionLength == 0) {
+                return false;
+              }
+              if (event.charCode == 45 || event.charCode == 46) {
+                event.preventDefault();
+              }
+            };
             document.getElementById("current_gpa_deci").addEventListener("input", cumulativeGPA_Deci);
           } else {
-            document.getElementById("current_gpa_whole").onkeypress = function(event) {if (this.value.length == 1) {return false;} if ((event.charCode >= 53 && event.charCode <= 57)
-             || event.charCode == 45 || event.charCode == 46) {event.preventDefault();} if (event.charCode == 52) {document.getElementById("current_gpa_deci").value = "000"; document.getElementById("current_gpa_deci").disabled = true;}};
-            document.getElementById("current_gpa_whole").onkeydown = function(event) {if (this.value == "4" && (event.key == "Backspace" || event.key == "Delete"))
-              {document.getElementById("current_gpa_deci").value = ""; document.getElementById("current_gpa_deci").disabled = false;}}
+            document.getElementById("current_gpa_whole").onkeypress = function(event) {
+              var selectionLength = this.selectionEnd - this.selectionStart;
+              if (this.value.length == 1 && selectionLength == 0) {
+                return false;
+              }
+              if ((event.charCode >= 53 && event.charCode <= 57) || event.charCode == 45 || event.charCode == 46) {
+                event.preventDefault();
+              }
+              if (event.charCode == 52) {
+                document.getElementById("current_gpa_deci").value = "000";
+                document.getElementById("current_gpa_deci").disabled = true;
+              }
+            };
+            document.getElementById("current_gpa_whole").onkeydown = function(event) {
+              if (this.value == "4" && (event.key == "Backspace" || event.key == "Delete")) {
+                document.getElementById("current_gpa_deci").value = "";
+                document.getElementById("current_gpa_deci").disabled = false;
+              }
+            }
             document.getElementById("current_gpa_whole").addEventListener("input", cumulativeGPA_Whole);
-            document.getElementById("current_gpa_deci").onkeypress = function(event) {if (this.value.length == 3) {return false;} if (event.charCode == 45 || event.charCode == 46) {event.preventDefault();}}
+            document.getElementById("current_gpa_deci").onkeypress = function(event) {
+              var selectionLength = this.selectionEnd - this.selectionStart;
+              console.log(selectionLength);
+              if (this.value.length == 3 && selectionLength == 0) {
+                return false;
+              }
+              if (event.charCode == 45 || event.charCode == 46) {
+                event.preventDefault();
+              }
+            };
             document.getElementById("current_gpa_deci").addEventListener("input", cumulativeGPA_Deci);
           }
+          if (!not_in_card_view) {
+            var update = document.getElementById("update_status");
+            if (document.getElementById("loader") != undefined) {
+              document.getElementById("loader").remove();
+            }
+            update.innerHTML = "Table Up to Date";
+            var check = document.createElement("img");
+            check.id = "check";
 
-          var update = document.getElementById("update_status");
-          document.getElementById("loader").remove();
-          update.innerHTML = "Table Up to Date";
-          var check = document.createElement("img");
-          check.id = "check";
-
-          // images/baseline_check_black_18dp.png made by [Maxim Basinski](https://www.flaticon.com/authors/maxim-basinski) from www.flaticon.com
-          check.src = chrome.extension.getURL("images/baseline_check_black_18dp.png");
-          update.insertAdjacentElement("afterbegin", check);
+            // images/baseline_check_black_18dp.png made by [Maxim Basinski](https://www.flaticon.com/authors/maxim-basinski) from www.flaticon.com
+            check.src = chrome.extension.getURL("images/baseline_check_black_18dp.png");
+            update.insertAdjacentElement("afterbegin", check);
+          } else {
+            notInCardView();
+          }
           removeFrames();
         }
       }
 
       function removeFrames() {
-        for (var i = 0; i < num_courses; i++) {
+        for (var i = 0; i < course_names.length; i++) {
           document.getElementById("i_frame" + i).remove();
         }
       }
@@ -261,12 +330,12 @@ if (window.location.href == "https://umd.instructure.com/" || window.location.hr
         parentDiv.insertBefore(gpaTable, currentDiv.nextSibling);
         var gpa_table = document.getElementById("gpa_table");
 
-        chrome.storage.local.get(['key', 'key2'], function(result) {
+        chrome.storage.local.get(['key', 'key2', 'key3'], function(result) {
           if (typeof result.key !== 'undefined') {
             table.innerHTML = result.key.val;
             currentDiv.style.visibility = "visible";
           } else {
-            var header = table.createTHead();
+            var header = table.createTBody();
             var headRow = header.insertRow(0);
             var headCourse = headRow.insertCell(-1);
             var headGrade = headRow.insertCell(-1);
@@ -289,7 +358,7 @@ if (window.location.href == "https://umd.instructure.com/" || window.location.hr
               var graphic = course.insertCell(-1);
               var letter = course.insertCell(-1);
               var credits = course.insertCell(-1);
-              course_name.innerHTML = "<a href =" + course_links[i] + ">" + name.innerHTML + "</a>";
+              course_name.innerHTML = "<a href =" + course_links[i] + ">" + name + "</a>";
               grade.innerHTML = "-";
               class_avg.innerHTML = "-";
               letter.innerHTML = "-";
@@ -301,7 +370,7 @@ if (window.location.href == "https://umd.instructure.com/" || window.location.hr
           if (typeof result.key2 !== 'undefined') {
               gpaTable.innerHTML = result.key2.val;
           } else {
-            var header = gpa_table.createTHead();
+            var header = gpa_table.createTBody();
             var headRow = header.insertRow(0);
             var headEx = headRow.insertCell(-1);
             var headCredits = headRow.insertCell(-1);
@@ -334,30 +403,30 @@ if (window.location.href == "https://umd.instructure.com/" || window.location.hr
             cumulativeCredits.innerHTML = "-";
             cumulativeGPA.innerHTML = "-";
           }
-
-          var button = document.getElementsByClassName("al-trigger Button Button--block")[0];
-          button.addEventListener("click", function() {
-            if (window.matchMedia("(max-width: 1248px)").matches && window.matchMedia("(min-width: 992px)").matches) {
-              var list = document.getElementsByClassName("al-options ui-menu ui-widget ui-widget-content ui-corner-all ui-popup ui-kyle-menu use-css-transitions-for-show-hide")[0];
-              var mainWrapper = document.getElementById("main_wrapper");
-              if (list.style.display != "none") {
-                mainWrapper.style.marginTop = "500px";
-              }
-              document.onmousedown = function() {
-                mainWrapper.style.marginTop = "355px";
-              }
-            }
-          });
-
           currentDiv.style.visibility = "visible";
           resizeWindow();
-          if (course_names.length > 0) {
+
+          if (temp_course_names.length > 0) {
+            for (var i = 0; i < temp_course_names.length && i < temp_course_links.length; i++) {
+              course_names.push(temp_course_names[i].innerHTML);
+              course_links.push(temp_course_links[i].href);
+            }
             sortRows();
             addCourse();
             removeCourse();
             startFrames();
           } else {
-            notInCardView();
+            for (var i = 1; i < table.rows.length; i++) {
+              course_names.push(table.rows[i].cells[0].childNodes[0].innerHTML);
+              course_links.push(table.rows[i].cells[0].childNodes[0].href);
+            }
+            if (course_names.length > 0) {
+              not_in_card_view = true;
+              notInCardView();
+              startFrames();
+            } else {
+              notInCardView();
+            }
           }
         });
       }
@@ -366,9 +435,9 @@ if (window.location.href == "https://umd.instructure.com/" || window.location.hr
         var courseTable = document.getElementById("course_table");
         for (var i = 0; i < course_names.length; i++) {
           for (var j = 1; j < courseTable.rows.length; j++) {
-            if (course_names[i].innerHTML == courseTable.rows[j].cells[0].childNodes[0].innerHTML && i != j - 1) {
+            if (course_names[i] == courseTable.rows[j].cells[0].childNodes[0].innerHTML && i != j - 1) {
                courseTable.rows[j].parentNode.insertBefore(courseTable.rows[j], courseTable.rows[i + 1]);
-            } else if (course_names[i].innerHTML == courseTable.rows[j].cells[0].childNodes[0].innerHTML && i == j - 1) {
+            } else if (course_names[i] == courseTable.rows[j].cells[0].childNodes[0].innerHTML && i == j - 1) {
               break;
             }
           }
@@ -378,13 +447,9 @@ if (window.location.href == "https://umd.instructure.com/" || window.location.hr
 
       function removeCourse() {
         var courseTable = document.getElementById("course_table");
-        var courseNames = [];
-        for (var name of course_names) {
-          courseNames.push(name.innerHTML);
-        }
         for (var i = 1; i < courseTable.rows.length; i++) {
           var course = courseTable.rows[i].cells[0].childNodes[0].innerHTML;
-          if (!courseNames.includes(course)) {
+          if (!course_names.includes(course)) {
             courseTable.deleteRow(i);
           }
         }
@@ -397,7 +462,7 @@ if (window.location.href == "https://umd.instructure.com/" || window.location.hr
           courses.push(courseTable.rows[i].cells[0].childNodes[0].innerHTML);
         }
         for (var i = 0; i < course_names.length; i++) {
-          if (!courses.includes(course_names[i].innerHTML)) {
+          if (!courses.includes(course_names[i])) {
             var course = courseTable.insertRow(i + 1);
             var course_name = course.insertCell(-1);
             var class_avg = course.insertCell(-1);
@@ -405,7 +470,7 @@ if (window.location.href == "https://umd.instructure.com/" || window.location.hr
             var graphic = course.insertCell(-1);
             var letter = course.insertCell(-1);
             var credits = course.insertCell(-1);
-            course_name.innerHTML = "<a href =" + course_links[i] + ">" + course_names[i].innerHTML + "</a>";
+            course_name.innerHTML = "<a href =" + course_links[i] + ">" + course_names[i] + "</a>";
             grade.innerHTML = "-";
             class_avg.innerHTML = "-";
             letter.innerHTML = "-";
@@ -416,27 +481,11 @@ if (window.location.href == "https://umd.instructure.com/" || window.location.hr
       }
 
       function notInCardView() {
-        if (gpa_table.rows[2].cells[1].innerHTML != "-") {
-          document.getElementById("current_credits").disabled = false;
-        }
-        if (gpa_table.rows[2].cells[2].innerHTML != "-") {
-          document.getElementById("current_gpa_whole").disabled = false;
-          document.getElementById("current_gpa_deci").disabled = false;
-        }
-        if (document.getElementsByClassName("Grade").length > 0) {
-          for (var i = 0; i < document.getElementsByClassName("Grade").length; i++) {
-            document.getElementsByClassName("Grade")[i].disabled = false;
-          }
-        }
-        if (document.getElementsByClassName("Credits").length > 0) {
-          for (var i = 0; i < document.getElementsByClassName("Credits").length; i++) {
-            document.getElementsByClassName("Credits")[i].disabled = false;
-          }
-        }
-
         var update = document.getElementById("update_status");
         var table = document.getElementById("course_table");
-        document.getElementById("loader").remove();
+        if (document.getElementById("loader") != undefined) {
+          document.getElementById("loader").remove();
+        }
         if (table.rows.length == 1) {
           update.innerHTML = "Change view to Card View by clicking on the three dot menu and reload the page to update.";
         } else {
@@ -472,9 +521,8 @@ if (window.location.href == "https://umd.instructure.com/" || window.location.hr
         }
         var key = 'key', table_stored = {'val': table.innerHTML};
         var key2 = 'key2', gpa_table_stored = {'val': gpa_table.innerHTML};
-        chrome.storage.local.set({key: table_stored, key2: gpa_table_stored}, function() {
-            // Do nothing
-        });
+        var key3 = 'key3', course_names_stored = {'val': course_names};
+        chrome.storage.local.set({key: table_stored, key2: gpa_table_stored, key3: course_names_stored}, function() {});
       }
 
       function gradeChange() {
@@ -683,10 +731,8 @@ if (window.location.href == "https://umd.instructure.com/" || window.location.hr
       }
 
       function resizeWindow() {
-        var screen_size = window.matchMedia("(max-width: 992px)");
-        if (screen_size.matches) {
-          right_side = document.getElementById("right-side-wrapper");
-          right_side.style.float = "left";
+        if (document.getElementById("main_wrapper").offsetTop < document.getElementById("umd-howtouse").offsetTop) {
+         document.getElementById("main_wrapper").style.marginTop = (document.getElementById("umd-howtouse").offsetTop - document.getElementById("main_wrapper").offsetTop) + 100 + "px";
         }
       }
     }
