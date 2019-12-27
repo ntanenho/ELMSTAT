@@ -43,7 +43,6 @@
   border-bottom-right-radius: 4px;
 }
 #course_table th, #gpa_table th {
-  /* border: 1px solid #ddd; */
   text-align: center;
   padding-left: 40px;
   padding-right: 40px;

@@ -186,38 +186,26 @@ if (window.location.href == "https://umd.instructure.com/" || window.location.hr
               }
           }
           if (gpa_table.rows[2].cells[1].innerHTML == "-") {
-              gpa_table.rows[2].cells[1].innerHTML = "<input type=number id=current_credits name=credits min=0 max=999 value=>";
+              gpa_table.rows[2].cells[1].innerHTML = "<input type=text maxlength=3 id=current_credits name=credits value=>";
               document.getElementById("current_credits").addEventListener("input", cumulativeCredits);
               document.getElementById("current_credits").onkeypress = function() {
-                var selectionLength = this.selectionEnd - this.selectionStart;
-                if (this.value.length == 3 && selectionLength == 0) {
-                  return false;
-                }
-                if (event.charCode == 46 || event.charCode == 45) {
+                if (event.charCode < 48 || event.charCode > 57) {
                    event.preventDefault();
                  }
                };
           } else {
             document.getElementById("current_credits").addEventListener("input", cumulativeCredits);
             document.getElementById("current_credits").onkeypress = function(event) {
-              var selectionLength = this.selectionEnd - this.selectionStart;
-              if (this.value.length == 3 && selectionLength == 0) {
-                return false;
-              }
-              if (event.charCode == 46 || event.charCode == 45) {
+              if (event.charCode < 48 || event.charCode > 57) {
                  event.preventDefault();
                }
              };
           }
 
           if (gpa_table.rows[2].cells[2].innerHTML == "-") {
-            gpa_table.rows[2].cells[2].innerHTML = "<div>" + "<input type=number id=current_gpa_whole name=gpa_whole value=><span> . <input type=number id=current_gpa_deci name=gpa_deci value=></span></div>";
+            gpa_table.rows[2].cells[2].innerHTML = "<div>" + "<input type=text maxlength=1 id=current_gpa_whole name=gpa_whole value=><span> . <input type=text maxlength=3 id=current_gpa_deci name=gpa_deci value=></span></div>";
             document.getElementById("current_gpa_whole").onkeypress = function(event) {
-              var selectionLength = this.selectionEnd - this.selectionStart;
-              if (this.value.length == 1 && selectionLength == 0) {
-                return false;
-              }
-              if ((event.charCode >= 53 && event.charCode <= 57) || event.charCode == 45 || event.charCode == 46) {
+              if (event.charCode < 48 || event.charCode >= 53) {
                 event.preventDefault();
               }
               if (event.charCode == 52) {
@@ -226,29 +214,21 @@ if (window.location.href == "https://umd.instructure.com/" || window.location.hr
               }
             };
             document.getElementById("current_gpa_whole").onkeydown = function(event) {
-              if (this.value == "4" && (event.key == "Backspace" || event.key == "Delete")) {
+              if (this.value == "4") {
                 document.getElementById("current_gpa_deci").value = "";
                 document.getElementById("current_gpa_deci").disabled = false;
               }
             };
             document.getElementById("current_gpa_whole").addEventListener("input", cumulativeGPA_Whole);
             document.getElementById("current_gpa_deci").onkeypress = function(event) {
-              var selectionLength = this.selectionEnd - this.selectionStart;
-              if (this.value.length == 3 && selectionLength == 0) {
-                return false;
-              }
-              if (event.charCode == 45 || event.charCode == 46) {
+              if (event.charCode < 48 || event.charCode > 57) {
                 event.preventDefault();
               }
             };
             document.getElementById("current_gpa_deci").addEventListener("input", cumulativeGPA_Deci);
           } else {
             document.getElementById("current_gpa_whole").onkeypress = function(event) {
-              var selectionLength = this.selectionEnd - this.selectionStart;
-              if (this.value.length == 1 && selectionLength == 0) {
-                return false;
-              }
-              if ((event.charCode >= 53 && event.charCode <= 57) || event.charCode == 45 || event.charCode == 46) {
+              if (event.charCode < 48 || event.charCode >= 53) {
                 event.preventDefault();
               }
               if (event.charCode == 52) {
@@ -257,19 +237,14 @@ if (window.location.href == "https://umd.instructure.com/" || window.location.hr
               }
             };
             document.getElementById("current_gpa_whole").onkeydown = function(event) {
-              if (this.value == "4" && (event.key == "Backspace" || event.key == "Delete")) {
+              if (this.value == "4") {
                 document.getElementById("current_gpa_deci").value = "";
                 document.getElementById("current_gpa_deci").disabled = false;
               }
             }
             document.getElementById("current_gpa_whole").addEventListener("input", cumulativeGPA_Whole);
             document.getElementById("current_gpa_deci").onkeypress = function(event) {
-              var selectionLength = this.selectionEnd - this.selectionStart;
-              console.log(selectionLength);
-              if (this.value.length == 3 && selectionLength == 0) {
-                return false;
-              }
-              if (event.charCode == 45 || event.charCode == 46) {
+              if (event.charCode < 48 || event.charCode > 57) {
                 event.preventDefault();
               }
             };
@@ -328,14 +303,14 @@ if (window.location.href == "https://umd.instructure.com/" || window.location.hr
         currentDiv.style.visibility = "hidden";
         currentDiv.insertAdjacentElement("afterbegin", loader);
         parentDiv.insertBefore(gpaTable, currentDiv.nextSibling);
-        var gpa_table = document.getElementById("gpa_table");
 
+        var gpa_table = document.getElementById("gpa_table");
         chrome.storage.local.get(['key', 'key2', 'key3'], function(result) {
           if (typeof result.key !== 'undefined') {
             table.innerHTML = result.key.val;
             currentDiv.style.visibility = "visible";
           } else {
-            var header = table.createTBody();
+            var header = table.createTHead();
             var headRow = header.insertRow(0);
             var headCourse = headRow.insertCell(-1);
             var headGrade = headRow.insertCell(-1);
@@ -370,8 +345,8 @@ if (window.location.href == "https://umd.instructure.com/" || window.location.hr
           if (typeof result.key2 !== 'undefined') {
               gpaTable.innerHTML = result.key2.val;
           } else {
-            var header = gpa_table.createTBody();
-            var headRow = header.insertRow(0);
+            var body = gpa_table.createTBody();
+            var headRow = body.insertRow(0);
             var headEx = headRow.insertCell(-1);
             var headCredits = headRow.insertCell(-1);
             var headGPA = headRow.insertCell(-1);
@@ -404,9 +379,9 @@ if (window.location.href == "https://umd.instructure.com/" || window.location.hr
             cumulativeGPA.innerHTML = "-";
           }
           currentDiv.style.visibility = "visible";
-          resizeWindow();
 
           if (temp_course_names.length > 0) {
+            resizeWindow();
             for (var i = 0; i < temp_course_names.length && i < temp_course_links.length; i++) {
               course_names.push(temp_course_names[i].innerHTML);
               course_links.push(temp_course_links[i].href);
@@ -416,6 +391,7 @@ if (window.location.href == "https://umd.instructure.com/" || window.location.hr
             removeCourse();
             startFrames();
           } else {
+            resizeWindow();
             for (var i = 1; i < table.rows.length; i++) {
               course_names.push(table.rows[i].cells[0].childNodes[0].innerHTML);
               course_links.push(table.rows[i].cells[0].childNodes[0].href);
