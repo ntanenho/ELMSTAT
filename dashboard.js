@@ -2,7 +2,6 @@ if (window.location.href == "https://umd.instructure.com/" || window.location.hr
   document.onreadystatechange = function () {
     if (document.readyState === 'complete') {
       window.addEventListener("beforeunload", storeTable);
-      window.addEventListener('resize', resizeWindow);
       var temp_course_names = document.getElementsByClassName("ic-DashboardCard__header-subtitle ellipsis");
       var temp_course_links = document.getElementsByClassName("ic-DashboardCard__link");
       var course_names = [], course_links = [];
@@ -205,16 +204,24 @@ if (window.location.href == "https://umd.instructure.com/" || window.location.hr
           if (gpa_table.rows[2].cells[2].innerHTML == "-") {
             gpa_table.rows[2].cells[2].innerHTML = "<div>" + "<input type=text maxlength=1 id=current_gpa_whole name=gpa_whole value=><span> . <input type=text maxlength=3 id=current_gpa_deci name=gpa_deci value=></span></div>";
             document.getElementById("current_gpa_whole").onkeypress = function(event) {
-              if (event.charCode < 48 || event.charCode >= 53) {
+              if (this.value != "4" && event.keyCode == 46) {
+                if (this.value == "") {
+                  document.getElementById("current_gpa_whole").value = "0";
+                }
+                document.getElementById("current_gpa_deci").select();
                 event.preventDefault();
-              }
-              if (event.charCode == 52) {
+              } else if (event.charCode < 48 || event.charCode >= 53) {
+                event.preventDefault();
+              } else if (event.charCode == 52) {
                 document.getElementById("current_gpa_deci").value = "000";
                 document.getElementById("current_gpa_deci").disabled = true;
+              } else if (this.value == "4") {
+                document.getElementById("current_gpa_deci").value = "";
+                document.getElementById("current_gpa_deci").disabled = false;
               }
             };
             document.getElementById("current_gpa_whole").onkeydown = function(event) {
-              if (this.value == "4") {
+              if (this.value == "4" && event.key == "Backspace") {
                 document.getElementById("current_gpa_deci").value = "";
                 document.getElementById("current_gpa_deci").disabled = false;
               }
@@ -228,20 +235,28 @@ if (window.location.href == "https://umd.instructure.com/" || window.location.hr
             document.getElementById("current_gpa_deci").addEventListener("input", cumulativeGPA_Deci);
           } else {
             document.getElementById("current_gpa_whole").onkeypress = function(event) {
-              if (event.charCode < 48 || event.charCode >= 53) {
+              if (this.value != "4" && event.keyCode == 46) {
+                if (this.value == "") {
+                  document.getElementById("current_gpa_whole").value = "0";
+                }
+                document.getElementById("current_gpa_deci").select();
                 event.preventDefault();
-              }
-              if (event.charCode == 52) {
+              } else if (event.charCode < 48 || event.charCode >= 53) {
+                event.preventDefault();
+              } else if (event.charCode == 52) {
                 document.getElementById("current_gpa_deci").value = "000";
                 document.getElementById("current_gpa_deci").disabled = true;
-              }
-            };
-            document.getElementById("current_gpa_whole").onkeydown = function(event) {
-              if (this.value == "4") {
+              } else if (this.value == "4") {
                 document.getElementById("current_gpa_deci").value = "";
                 document.getElementById("current_gpa_deci").disabled = false;
               }
-            }
+            };
+            document.getElementById("current_gpa_whole").onkeydown = function(event) {
+              if (this.value == "4" && event.key == "Backspace") {
+                document.getElementById("current_gpa_deci").value = "";
+                document.getElementById("current_gpa_deci").disabled = false;
+              }
+            };
             document.getElementById("current_gpa_whole").addEventListener("input", cumulativeGPA_Whole);
             document.getElementById("current_gpa_deci").onkeypress = function(event) {
               if (event.charCode < 48 || event.charCode > 57) {
@@ -381,7 +396,6 @@ if (window.location.href == "https://umd.instructure.com/" || window.location.hr
           currentDiv.style.visibility = "visible";
 
           if (temp_course_names.length > 0) {
-            resizeWindow();
             for (var i = 0; i < temp_course_names.length && i < temp_course_links.length; i++) {
               course_names.push(temp_course_names[i].innerHTML);
               course_links.push(temp_course_links[i].href);
@@ -391,7 +405,6 @@ if (window.location.href == "https://umd.instructure.com/" || window.location.hr
             removeCourse();
             startFrames();
           } else {
-            resizeWindow();
             for (var i = 1; i < table.rows.length; i++) {
               course_names.push(table.rows[i].cells[0].childNodes[0].innerHTML);
               course_links.push(table.rows[i].cells[0].childNodes[0].href);
@@ -703,12 +716,6 @@ if (window.location.href == "https://umd.instructure.com/" || window.location.hr
          }
         } else {
            gpa_table.rows[3].cells[2].innerHTML = "-";
-        }
-      }
-
-      function resizeWindow() {
-        if (document.getElementById("main_wrapper").offsetTop < document.getElementById("umd-howtouse").offsetTop) {
-         document.getElementById("main_wrapper").style.marginTop = (document.getElementById("umd-howtouse").offsetTop - document.getElementById("main_wrapper").offsetTop) + 100 + "px";
         }
       }
     }

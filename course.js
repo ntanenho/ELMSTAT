@@ -17,6 +17,9 @@ if (window.location.href.match(/https:\/\/umd\.instructure\.com\/courses\/.*\/gr
       if (!user_grade) {
         user_grade = -1;
       }
+      if (user_grade.length == 2) {
+        user_grade = ((user_grade[0] / user_grade[1]) * 100).toFixed(2);
+      }
       var points_possible = document.getElementsByClassName("possible points_possible");
       var check_avgs_exist = document.getElementsByClassName("ic-Table ic-Table--condensed score_details_table")[0];
       if (user_grade != -1 && points_possible != undefined && check_avgs_exist != undefined) {

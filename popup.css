@@ -5,16 +5,16 @@ body {
   background-color:#FFD520;
 }
 #title {
-  font-size:40px;
+  font-size: 40px;
   color: #FFFFFF;
   margin-left:15px;
   padding-top:30px;
 }
 #description {
-  font-size:14px;
-  color:#FFFFFF;
-  margin-left:15px;
-  margin-top:10px;
+  font-size: 16px;
+  color: #FFFFFF;
+  margin-left: 15px;
+  margin-top: 10px;
 }
 #mainDiv {
   height: 350px;
@@ -23,9 +23,9 @@ body {
 }
 #div1 {
   height: 200px;
-  width: 250px;
+  width: 260px;
   background-color: #E03A3E;
-  margin-left: 15px;
+  margin-left: 10px;
   margin-top: 25px;
   border-radius: 4px;
 }
