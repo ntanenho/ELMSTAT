@@ -127,6 +127,7 @@ if (window.location.href == "https://umd.instructure.com/" || window.location.hr
 
       function continueCode() {
         if (frame_loads == course_names.length) {
+          semesterCredits();
           var table = document.getElementById("course_table");
           var gpa_table = document.getElementById("gpa_table");
           var k = 0, j = 0;
@@ -436,10 +437,13 @@ if (window.location.href == "https://umd.instructure.com/" || window.location.hr
 
       function removeCourse() {
         var courseTable = document.getElementById("course_table");
-        for (var i = 1; i < courseTable.rows.length; i++) {
+        var i = 1;
+        while (i < courseTable.rows.length) {
           var course = courseTable.rows[i].cells[0].childNodes[0].innerHTML;
           if (!course_names.includes(course)) {
             courseTable.deleteRow(i);
+          } else {
+            i++;
           }
         }
       }
