@@ -127,7 +127,6 @@ if (window.location.href == "https://umd.instructure.com/" || window.location.hr
 
       function continueCode() {
         if (frame_loads == course_names.length) {
-          semesterCredits();
           var table = document.getElementById("course_table");
           var gpa_table = document.getElementById("gpa_table");
           var k = 0, j = 0;
@@ -203,7 +202,7 @@ if (window.location.href == "https://umd.instructure.com/" || window.location.hr
           }
 
           if (gpa_table.rows[2].cells[2].innerHTML == "-") {
-            gpa_table.rows[2].cells[2].innerHTML = "<div>" + "<input type=text maxlength=1 id=current_gpa_whole name=gpa_whole value=><span> . <input type=text maxlength=3 id=current_gpa_deci name=gpa_deci value=></span></div>";
+            gpa_table.rows[2].cells[2].innerHTML = "<div>" + "<input type=text maxlength=1 id=current_gpa_whole name=gpa_whole value=><span id=deci_point> . </span><input type=text maxlength=3 id=current_gpa_deci name=gpa_deci value=></div>";
             document.getElementById("current_gpa_whole").onkeypress = function(event) {
               if (this.value != "4" && event.keyCode == 46) {
                 if (this.value == "") {
@@ -281,6 +280,7 @@ if (window.location.href == "https://umd.instructure.com/" || window.location.hr
           } else {
             notInCardView();
           }
+          semesterCredits();
           removeFrames();
         }
       }

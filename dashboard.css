@@ -15,7 +15,7 @@
    border-radius: 4px;
  }
 #course_table td, #gpa_table td {
-  padding: 1px;
+  padding: 5px;
   text-align: center;
 }
 #course_table tr:nth-child(even) {
@@ -23,10 +23,9 @@
 }
 #main_wrapper {
   width: 100%;
-  display: inline-block;
+  display: table;
   position: relative;
   padding-right: 20px;
-  flex-wrap: wrap;
 }
 #update_status {
   padding-top: 5px;
@@ -98,9 +97,13 @@
   -webkit-box-sizing:border-box;
   -moz-box-sizing: border-box;
 }
+#deci_point {
+  vertical-align: sub;  /*align decimal point to bottom*/
+  /* line-height: 1.2; */
+}
 #current_gpa_deci {
   text-align: center;
-  width: 40%;
+  width: 45%;
   margin-top: 10px;
   box-sizing: border-box;
   -webkit-box-sizing:border-box;
@@ -122,13 +125,3 @@ input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
-/* @media only screen and (min-width: 992px) {
-    #course_table  {
-      display: flex;
-      flex-direction: row;
-    }
-    #th {
-      display: flex;
-      flex-direction: row;
-    }
-} */
